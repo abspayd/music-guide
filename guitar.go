@@ -42,11 +42,11 @@ func PrintFretBoard() {
 }
 
 func Locate(n note) [NUMBER_OF_STRINGS]int {
-	fretboard := Fretboard()
+	// fretboard := Fretboard()
 	for i := 0; i < NUMBER_OF_STRINGS; i++ {
-		string := fretboard[i]
+		// string := fretboard[i]
 		// Search for note on fretboard
 
 	}
-	return [NUMBER_OF_STRINGS]int{0,0,0,0,0,0}
+	return [NUMBER_OF_STRINGS]int{}
 }

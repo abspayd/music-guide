@@ -2,12 +2,18 @@ package main
 
 import (
 	"fmt"
-)
+)	
 
 type note struct {
 	oct int 
 	pitch int
 }
+
+// 	// 0  1  2  3  4  5  6  7  8  9  10 11
+// 	// c  c# d  d# e  f  f# g  g# a  a# b
+// 	// c  db d  eb e  f  gb g  ab a  bb b
+var sharpNotes = []string{"c","c#","d","d#","e","f","f#", "g","g#","a","a#","b"}
+var flatNotes = []string{"c","db","d","eb","e","f","gb", "g","ab","a","bb","b"}
 
 func (n note) GetInterval(n2 note) int {
 	interval := (n2.pitch + n2.oct * 12) - (n.pitch + n.oct * 12)
@@ -34,54 +40,37 @@ func (n note) ToString() string {
 	return fmt.Sprintf("%s%d", pitch, n.oct)
 }
 
+/**
+* Get the index of a pitch from its string value
+*/
 func Search(pitchString string) int {
-	fmt.Printf("int(pitchString[0])=%d\n", int(pitchString[0]))
-
-	pitch := int(pitchString[0]) - int('a') // Abs(int(pitchString[0])-int('c')) ?
-	fmt.Println(pitch)
-
-	// if len(pitchString) > 1 {
-	// 	if contains sharp {
-	// 		pitch++
-	// 	} else if contains flat {
-	// 		pitch--
-	// 	}
-	// }
- 
-	return pitch
-	// return BinarySearch(pitchString, asFlat, 0, len(pitchString)-1)
-}
-
-func BinarySearch(pitchString string, asFlat bool, left int, right int) int {
-	// TODO: use binary search to look for pitch (look at int(pitchString[0]) as search value)
-
-	// OR: use ascii integer values a-g and increment/decrement based on #'s or b's present
-	return -1
-}
-
-func PitchIndex(pitchString string, asFlat bool) int {
-	pitches := PitchArray(asFlat)
-	for i := 0; i < len(pitches); i++ {
-		if pitches[i] == pitchString {
-			return i
+	// Get values for basic notes (no sharps or flats)
+	i := (int(pitchString[0] + 6) % 7) * 2
+	if i > 4 {
+		i--
+	}
+	// increment pitch by 1 for every sharp;
+	// decrement pitch by 1 for every flat
+	l := len(pitchString)
+	if l > 1 {
+		for j := 1; j < l; j++ {
+			if pitchString[j] == '#' {
+				i = (i+1) % 12
+			} else if pitchString[j] == 'b' {
+				i = (i+11) % 12 // Wrap-around subtraction
+			}
 		}
 	}
-	// Pitch not found
-	return -1
-}
-
-func PitchArray(asFlat bool) []string {
-	// 0  1  2  3  4  5  6  7  8  9  10 11
-	// c  c# d  d# e  f  f# g  g# a  a# b
-	// c  db d  eb e  f  gb g  ab a  bb b
-	if asFlat {
-		return []string{"c","db","d","eb","e","f","gb", "g","ab","a","bb","b"}
-	}
-	return []string{"c","c#","d","d#","e","f","f#", "g","g#","a","a#","b"}
+	return i
 }
 
 func PitchToString(pitch int, asFlat bool) string {
-	pitches := PitchArray(asFlat)
+	var pitches []string
+	if asFlat {
+		pitches = flatNotes
+	} else {
+		pitches = sharpNotes
+	}
 
 	return pitches[pitch % len(pitches)]
 }
