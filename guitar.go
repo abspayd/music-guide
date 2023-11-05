@@ -46,7 +46,6 @@ func Locate(n note) [NUMBER_OF_STRINGS]int {
 	for i := 0; i < NUMBER_OF_STRINGS; i++ {
 		// string := fretboard[i]
 		// Search for note on fretboard
-
 	}
 	return [NUMBER_OF_STRINGS]int{}
 }

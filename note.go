@@ -9,11 +9,13 @@ type note struct {
 	pitch int
 }
 
-// 	// 0  1  2  3  4  5  6  7  8  9  10 11
-// 	// c  c# d  d# e  f  f# g  g# a  a# b
-// 	// c  db d  eb e  f  gb g  ab a  bb b
-var sharpNotes = []string{"c","c#","d","d#","e","f","f#", "g","g#","a","a#","b"}
-var flatNotes = []string{"c","db","d","eb","e","f","gb", "g","ab","a","bb","b"}
+var (
+	// 	// 0  1  2  3  4  5  6  7  8  9  10 11
+	// 	// c  c# d  d# e  f  f# g  g# a  a# b
+	// 	// c  db d  eb e  f  gb g  ab a  bb b
+	sharpNotes = []string{"c","c#","d","d#","e","f","f#", "g","g#","a","a#","b"}
+	flatNotes = []string{"c","db","d","eb","e","f","gb", "g","ab","a","bb","b"}
+)
 
 func (n note) GetInterval(n2 note) int {
 	interval := (n2.pitch + n2.oct * 12) - (n.pitch + n.oct * 12)
