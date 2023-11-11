@@ -15,8 +15,8 @@ var (
 )
 
 func loadTemplates() *template.Template{
-	fs := os.DirFS("./templates")
-	return template.Must(template.ParseFS(fs, "*.html"))
+	tmplFS := os.DirFS("./tmpl")
+	return template.Must(template.ParseFS(tmplFS, "*.html"))
 }
 
 func makeHandler(fn func(http.ResponseWriter, *http.Request, string)) http.HandlerFunc {
