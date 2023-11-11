@@ -1,13 +1,21 @@
 {{template "header"}}
 
-<form action="/intervals" method="POST">
-	<div>
-		<input type="text" name="pitch1" placeholder="Note 1">
-		<input type="text" name="pitch2" placeholder="Note 2">
-	</div>
+<div class="test p-3">
+	<form action="/intervals" method="POST">
+		<label for="pitch1" class="block text-sm font-medium leading-6 text-gray-900">Pitch 1</label>
+		<div class="relative mt-2 rounded-md shadow-sm">
+			<input type="text" name="pitch1" placeholder="Note 1"
+				class="block w-full rounded-md border-0 py-1.5 pl-7 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+			<input type="text" name="pitch2" placeholder="Note 2">
 
-	<input type="submit" value="Get interval">
-</form>
+			<input type="submit" value="Get interval">
+		</div>
+	</form>
+</div>
+
+
+<input type="checkbox" class="ml-10 form-checkbox rounded text-pink-500" />
+
 
 {{if .}}
 Interval: {{.}}
