@@ -2,6 +2,8 @@ package music
 
 import (
 	"fmt"
+	"errors"
+	"regexp"
 )	
 
 type Note struct {
@@ -45,7 +47,14 @@ func (n Note) ToString() string {
 /**
 * Get the index of a pitch from its string value
 */
-func Search(pitchString string) int {
+func Search(pitchString string) (int, error) {
+	
+	validPitch := regexp.MustCompile("^[a-gA-G][#,b]*$")
+	m := validPitch.MatchString(pitchString)
+	if !m {
+		return -1, errors.New(fmt.Sprintf("Invalid pitch: %s", pitchString))
+	}
+
 	// Get values for basic notes (no sharps or flats)
 	i := (int(pitchString[0] + 6) % 7) * 2
 	if i > 4 {
@@ -63,7 +72,7 @@ func Search(pitchString string) int {
 			}
 		}
 	}
-	return i
+	return i, nil
 }
 
 func PitchToString(pitch int, asFlat bool) string {

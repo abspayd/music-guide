@@ -14,7 +14,7 @@ var (
 	templates = loadTemplates()
 )
 
-func loadTemplates() *template.Template{
+func loadTemplates() *template.Template {
 	tmplFS := os.DirFS("./tmpl")
 	return template.Must(template.ParseFS(tmplFS, "*.html"))
 }
@@ -50,35 +50,39 @@ func handleDefault(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func handleStatic(w http.ResponseWriter, r *http.Request) {
+
+}
+
 func handleIndex(w http.ResponseWriter, r *http.Request, tmpl string) {
 	renderTemplate(w, tmpl+".html", nil)
 }
 
 func handleIntervals(w http.ResponseWriter, r *http.Request, tmpl string) {
-	p1 := r.FormValue("pitch1")
-	p2 := r.FormValue("pitch2")
+	if r.Method == http.MethodGet {
+		renderTemplate(w, tmpl+".html", nil)
+	} else if r.Method == http.MethodPost {
+		p1 := r.FormValue("pitch1")
+		p2 := r.FormValue("pitch2")
 
-	var answer string
-	if len(p1) > 0 && len(p2) > 0 {
-		note1 := music.Note{Pitch: music.Search(p1), Octave: 0} 
-		note2 := music.Note{Pitch: music.Search(p2), Octave: 0} 
+		idx1, _ := music.Search(p1)
+		idx2, _ := music.Search(p2)
+
+		note1 := music.Note{Pitch: idx1, Octave: 0}
+		note2 := music.Note{Pitch: idx2, Octave: 0}
 
 		interval := note1.GetInterval(note2)
-		answer = music.IntervalToString(interval)
+		intervalString := music.IntervalToString(interval)
+
+		templates.ExecuteTemplate(w, "intervalResult", intervalString)
 	}
-	renderTemplate(w, tmpl+".html", answer)
 }
 
-func handleGetInterval(w http.ResponseWriter, r *http.Request) {
-	p1 := r.FormValue("pitch1")
-	p2 := r.FormValue("pitch2")
-
-	note1 := music.Note{Pitch: music.Search(p1), Octave: 0} 
-	note2 := music.Note{Pitch: music.Search(p2), Octave: 0} 
-
-	interval := note1.GetInterval(note2)
-	intervalString := music.IntervalToString(interval)
-	
-	renderTemplate(w, "intervals.html", intervalString)
+func handleValidateNote(w http.ResponseWriter, r *http.Request) {
+	pitch := "c" // r.PostForm
+	_, err := music.Search(pitch)
+	if err != nil {
+		w.Write([]byte(err.Error()))
+	}
+	// w.Write([]byte("Validating input..."))
 }
-
