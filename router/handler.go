@@ -65,16 +65,32 @@ func handleIntervals(w http.ResponseWriter, r *http.Request, tmpl string) {
 		p1 := r.FormValue("pitch1")
 		p2 := r.FormValue("pitch2")
 
-		idx1, _ := music.Search(p1)
-		idx2, _ := music.Search(p2)
+		idx1, err1 := music.Search(p1)
+		idx2, err2 := music.Search(p2)
+		if err1 != nil || err2 != nil {
+			http.Error(w, "Invalid pitch received.", http.StatusBadRequest)
+			return
+		}
 
 		note1 := music.Note{Pitch: idx1, Octave: 0}
 		note2 := music.Note{Pitch: idx2, Octave: 0}
 
-		interval := note1.GetInterval(note2)
-		intervalString := music.IntervalToString(interval)
+		if note1.Pitch > note2.Pitch {
+			// Make the first pitch always treated
+			// as an octave below the second
+			note2.Octave++
+		}
 
-		templates.ExecuteTemplate(w, "intervalResult", intervalString)
+		type Interval struct {
+			Distance int
+			String   string
+		}
+
+		interval := &Interval{}
+		interval.Distance = note1.GetInterval(note2)
+		interval.String = music.IntervalToString(interval.Distance)
+
+		templates.ExecuteTemplate(w, "intervalResult", interval)
 	}
 }
 
