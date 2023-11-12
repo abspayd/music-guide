@@ -4,6 +4,13 @@ on:
   push:
     branches: [ "main" ]
 
+env:
+  DROPLET_NAME: music-companion
+  IMAGE: abspayd/music-companion
+  CONTAINER_NAME: music-companion
+  VERSION: latest
+  PORT: 3000
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -26,7 +33,7 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: abspayd/music-companion:latest
+          tags: ${{ env.IMAGE }}:${{ env.VERSION }}
 
   deploy:
     runs-on: ubuntu-latest
@@ -38,5 +45,10 @@ jobs:
         with:
           token: ${{ secrets.DIGITALOCEAN_API_TOKEN }}
 
-      - name: Docker pull and run
-        run: echo "TODO"
+      - name: Docker pull
+        run: doctl compute ${{ env.DROPLET_NAME }} ssh \
+          --ssh-command "docker pull ${{ env.IMAGE }}:${{ env.VERSION }}"
+
+      - name: Run image
+        run: doctl compute ${{env.DROPLET_NAME}} ssh \
+          --ssh-command "docker run -p ${{env.PORT}}:${{env.PORT}} -itd --rm --name ${{env.CONTAINER_NAME}} ${{env.IMAGE}}:${{env.VERSION}}"
