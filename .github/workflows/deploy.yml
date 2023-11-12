@@ -5,20 +5,6 @@ on:
     branches: [ "main" ]
 
 jobs:
-  setup:
-    runs-on: ubuntu-latest
-    steps:
-      - name: DigitalOcean - doctl
-        uses: digitalocean/action-doctl@v2.5.0
-        with:
-          token: ${{ secrets.DIGITALOCEAN_API_TOKEN }}
-
-      - name: Docker Login
-        uses: docker/login-action@v3.0.0
-        with:
-          username: abspayd
-          password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
-
   build:
     runs-on: ubuntu-latest
     needs:
@@ -26,8 +12,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Docker Login
+        uses: docker/login-action@v3.0.0
+        with:
+        username: abspayd
+        password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
@@ -41,5 +35,10 @@ jobs:
     needs:
       - build
     steps:
+      - name: DigitalOcean - doctl
+        uses: digitalocean/action-doctl@v2.5.0
+        with:
+          token: ${{ secrets.DIGITALOCEAN_API_TOKEN }}
+
       - name: Docker pull and run
         run: echo "TODO"
