@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: DigitalOcean - doctl
-        uses: digitalocean/action-doctl@2.5.0
+        uses: digitalocean/action-doctl@v2.5.0
         with:
           token: ${{ secrets.DIGITALOCEAN_API_TOKEN }}
 
