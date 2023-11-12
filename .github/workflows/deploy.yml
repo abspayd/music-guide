@@ -27,13 +27,13 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build and push
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: ${{ env.IMAGE }}:${{ env.VERSION }}
+      # - name: Build and push
+      #   uses: docker/build-push-action@v5
+      #   with:
+      #     context: .
+      #     platforms: linux/amd64,linux/arm64
+      #     push: true
+      #     tags: ${{ env.IMAGE }}:${{ env.VERSION }}
 
   deploy:
     runs-on: ubuntu-latest
@@ -45,10 +45,22 @@ jobs:
         with:
           token: ${{ secrets.DIGITALOCEAN_API_TOKEN }}
 
-      - name: Docker pull
-        run: doctl compute ssh ${{ env.DROPLET_NAME }} \
-          --ssh-command "docker pull ${{ env.IMAGE }}:${{ env.VERSION }}"
+      - name: Droplet IPv4
+        run: |
+          {
+            echo "IPV4<<EOF"
+            doctl compute droplet get music-companion --format PublicIPv4 --no-header # Get the IPv4 of the droplet
+            echo EOF
+          } >> "$GITHUB_ENV"
 
-      - name: Run image
-        run: doctl compute ssh ${{env.DROPLET_NAME}} \
-          --ssh-command "docker run -p ${{env.PORT}}:${{env.PORT}} -itd --rm --name ${{env.CONTAINER_NAME}} ${{env.IMAGE}}:${{env.VERSION}}"
+
+      - name: Print IPv4
+        run:
+          echo "${{ env.IPV4 }}"
+      # - name: Docker pull
+      #   run: doctl compute ssh ${{ env.DROPLET_NAME }} \
+      #     --ssh-command "docker pull ${{ env.IMAGE }}:${{ env.VERSION }}"
+
+      # - name: Run image
+      #   run: doctl compute ssh ${{env.DROPLET_NAME}} \
+      #     --ssh-command "docker run -p ${{env.PORT}}:${{env.PORT}} -itd --rm --name ${{env.CONTAINER_NAME}} ${{env.IMAGE}}:${{env.VERSION}}"
