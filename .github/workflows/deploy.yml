@@ -46,9 +46,9 @@ jobs:
           token: ${{ secrets.DIGITALOCEAN_API_TOKEN }}
 
       - name: Docker pull
-        run: doctl compute ${{ env.DROPLET_NAME }} ssh \
+        run: doctl compute ssh ${{ env.DROPLET_NAME }} \
           --ssh-command "docker pull ${{ env.IMAGE }}:${{ env.VERSION }}"
 
       - name: Run image
-        run: doctl compute ${{env.DROPLET_NAME}} ssh \
+        run: doctl compute ssh ${{env.DROPLET_NAME}} \
           --ssh-command "docker run -p ${{env.PORT}}:${{env.PORT}} -itd --rm --name ${{env.CONTAINER_NAME}} ${{env.IMAGE}}:${{env.VERSION}}"
