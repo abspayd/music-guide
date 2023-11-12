@@ -5,71 +5,37 @@ import (
 )
 
 func TestSearch(t *testing.T) {
-	// Test c = 0
-	noteString := "c"
-	expected := 0
-	i, _ := Search(noteString)
-	if i != expected {
-		t.Errorf("Search(\"%s\") = %d; expected %d", noteString, i, expected)
+	test := map[string]int{
+		// Input: expected result
+		"c":   0,
+		"b#":  0,
+		"d##": 4,
+		"e#":  5,
+		"f#":  6,
+		"gb":  6,
+		"cbb": 10,
+		"b":   11,
 	}
 
-	// Test b = 11
-	noteString = "b"
-	expected = 11
-	i, _ = Search(noteString)
-	if i != expected {
-		t.Errorf("Search(\"%s\") = %d; expected %d", noteString, i, expected)
+	for note, expected := range test {
+		res, _ := Search(note)
+		if res != expected {
+			t.Errorf("Search(\"%s\") = %d; expected %d", note, res, expected)
+		}
 	}
 
-	// Test f# = 6
-	noteString = "f#"
-	expected = 6
-	i, _ = Search(noteString)
-	if i != expected {
-		t.Errorf("Search(\"%s\") = %d; expected %d", noteString, i, expected)
-	}
-
-	// Test gb = 6
-	noteString = "gb"
-	expected = 6
-	i, _ = Search(noteString)
-	if i != expected {
-		t.Errorf("Search(\"%s\") = %d; expected %d", noteString, i, expected)
-	}
-
-	// Test b# = 0
-	noteString = "b#"
-	expected = 0
-	i, _ = Search(noteString)
-	if i != expected {
-		t.Errorf("Search(\"%s\") = %d; expected %d", noteString, i, expected)
-	}
-
-	// Test e# = 5
-	noteString = "e#"
-	expected = 5
-	i, _ = Search(noteString)
-	if i != expected {
-		t.Errorf("Search(\"%s\") = %d; expected %d", noteString, i, expected)
-	}
-
-	// Test double sharp
-	noteString = "d##"
-	expected = 4
-	i, _ = Search(noteString)
-	if i != expected {
-		t.Errorf("Search(\"%s\") = %d; expected %d", noteString, i, expected)
-	}
-
-	// Test double flat
-	noteString = "cbb"
-	expected = 10
-	i, _ = Search(noteString)
-	if i != expected {
-		t.Errorf("Search(\"%s\") = %d; expected %d", noteString, i, expected)
+	_, err := Search("h")
+	if err == nil {
+		t.Errorf("Search(\"h\") did not return an error")
 	}
 }
 
-func TestIntervalToString(t *testing.T) {
-	// TODO
+func TestGetInterval(t *testing.T) {
+	c := Note{Pitch: 0, Octave: 0}
+	test := map[Note]int{}
+
+	for note, expected := range test {
+		c.GetInterval(note)
+		_ = expected
+	}
 }

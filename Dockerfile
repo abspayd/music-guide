@@ -2,4 +2,5 @@ FROM golang:1.21
 WORKDIR /app
 COPY . .
 EXPOSE 3000
-CMD go run .
+RUN go build -o bin/music .
+CMD ./bin/music
