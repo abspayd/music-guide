@@ -15,5 +15,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build the Docker image
-      run: make docker-export
+      run: docker login -u abspayd -p $DOCKER_ACCESS_TOKEN /
+            make docker-export
       # run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
