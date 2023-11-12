@@ -4,13 +4,14 @@
 
 @layer base {
 	body {
-		@apply bg-slate-900 font-sans text-slate-200;
+		@apply font-sans bg-slate-800;
 	}
 }
 
 @layer components {
 	.btn-primary {
 		@apply
+			text-slate-100
 			h-10
 			px-6
 			bg-sky-600
@@ -22,6 +23,6 @@
 	}
 
 	.text-input {
-		@apply text-gray-800 p-1 rounded-md w-32 text-sm bg-slate-300 shadow-sm;
+		@apply text-gray-800 p-1 rounded-md w-32 text-sm bg-slate-200 shadow-sm;
  	}
 }
