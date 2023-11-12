@@ -58,9 +58,6 @@ jobs:
         run: |
           echo "${{ env.IPV4 }}"
 
-      - name: SSH
-        run: |
-          ssh ${{ env.IPV4 }} -l root
       # - name: Docker pull
       #   run: doctl compute ssh ${{ env.DROPLET_NAME }} \
       #     --ssh-command "docker pull ${{ env.IMAGE }}:${{ env.VERSION }}"
