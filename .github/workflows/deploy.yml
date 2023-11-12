@@ -34,34 +34,3 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ env.IMAGE }}:${{ env.VERSION }}
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs:
-      - build
-    steps:
-      - name: DigitalOcean - doctl
-        uses: digitalocean/action-doctl@v2.5.0
-        with:
-          token: ${{ secrets.DIGITALOCEAN_API_TOKEN }}
-
-      - name: Droplet IPv4
-        run: |
-          {
-            echo "IPV4<<EOF"
-            doctl compute droplet get music-companion --format PublicIPv4 --no-header # Get the IPv4 of the droplet
-            echo EOF
-          } >> "$GITHUB_ENV"
-
-
-      - name: Print IPv4
-        run: |
-          echo "${{ env.IPV4 }}"
-
-      # - name: Docker pull
-      #   run: doctl compute ssh ${{ env.DROPLET_NAME }} \
-      #     --ssh-command "docker pull ${{ env.IMAGE }}:${{ env.VERSION }}"
-
-      # - name: Run image
-      #   run: doctl compute ssh ${{env.DROPLET_NAME}} \
-      #     --ssh-command "docker run -p ${{env.PORT}}:${{env.PORT}} -itd --rm --name ${{env.CONTAINER_NAME}} ${{env.IMAGE}}:${{env.VERSION}}"
