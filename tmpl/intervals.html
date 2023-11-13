@@ -9,14 +9,6 @@
 				{{range .}}
 					{{template "noteInput" .}}
 				{{end}}
-				<!-- <div hx-target="this" hx-swap="outerHTML">
-					<input class="text-input" id="pitch1" type="text" name="pitch1" placeholder="Note 1"
-						hx-post="/validateNote/pitch1" hx-trigger="change" hx-sync="closest form:drop">
-				</div>
-				<div hx-target="this" hx-swap="outerHTML">
-					<input class="text-input" id="pitch2" type="text" name="pitch2" placeholder="Note 2"
-						hx-post="/validateNote/pitch2" hx-trigger="change" hx-sync="closest form:drop">
-				</div> -->
 			</div>
 
 			<button class="btn-primary" type="submit">
