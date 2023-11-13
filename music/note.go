@@ -48,8 +48,7 @@ func (n Note) ToString() string {
 * Get the index of a pitch from its string value
  */
 func Search(pitchString string) (int, error) {
-
-	validPitch := regexp.MustCompile("^[a-gA-G][#,b]*$")
+	validPitch := regexp.MustCompile("^[a-gA-G][#b]*$")
 	m := validPitch.MatchString(pitchString)
 	if !m {
 		return -1, errors.New(fmt.Sprintf("Invalid pitch: %s", pitchString))

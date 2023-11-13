@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 	"regexp"
+	"strconv"
 
 	"github.com/abspayd/music-companion/music"
 )
@@ -13,6 +14,12 @@ var (
 	validPath = regexp.MustCompile("^/(home|intervals)$")
 	templates = loadTemplates()
 )
+
+type InputField struct {
+	WhichPitch int
+	Value      string
+	Error      string
+}
 
 func loadTemplates() *template.Template {
 	tmplFS := os.DirFS("./tmpl")
@@ -60,7 +67,21 @@ func handleIndex(w http.ResponseWriter, r *http.Request, tmpl string) {
 
 func handleIntervals(w http.ResponseWriter, r *http.Request, tmpl string) {
 	if r.Method == http.MethodGet {
-		renderTemplate(w, tmpl+".html", nil)
+		// Create initial fields for inputs
+		inputs := []InputField{
+			{
+				Value:      "",
+				WhichPitch: 1,
+				Error:      "",
+			},
+			{
+				Value:      "",
+				WhichPitch: 2,
+				Error:      "",
+			},
+		}
+
+		renderTemplate(w, tmpl+".html", inputs)
 	} else if r.Method == http.MethodPost {
 		p1 := r.FormValue("pitch1")
 		p2 := r.FormValue("pitch2")
@@ -95,10 +116,30 @@ func handleIntervals(w http.ResponseWriter, r *http.Request, tmpl string) {
 }
 
 func handleValidateNote(w http.ResponseWriter, r *http.Request) {
-	pitch := "c" // r.PostForm
-	_, err := music.Search(pitch)
+	inputName := r.Header["Hx-Trigger-Name"][0]
+	inputIdentifier, err := regexp.Compile("[0-9]+")
 	if err != nil {
-		w.Write([]byte(err.Error()))
+		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
-	// w.Write([]byte("Validating input..."))
+	whichPitch, err := strconv.Atoi(inputIdentifier.FindString(inputName))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+	pitch := r.FormValue(inputName)
+	_, err = music.Search(pitch)
+	if err != nil {
+		inputError := &InputField{
+			WhichPitch: whichPitch,
+			Value:      pitch,
+			Error:      "Invalid pitch",
+		}
+		templates.ExecuteTemplate(w, "invalidateNote", inputError)
+	} else {
+		input := &InputField{
+			WhichPitch: whichPitch,
+			Value:      pitch,
+			Error:      "",
+		}
+		templates.ExecuteTemplate(w, "noteInput", input)
+	}
 }

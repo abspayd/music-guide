@@ -17,7 +17,6 @@ func TestSearch(t *testing.T) {
 		"cbb": 10,
 		"b":   11,
 	}
-
 	for note, expected := range test {
 		res, _ := Search(note)
 		if res != expected {
@@ -25,9 +24,16 @@ func TestSearch(t *testing.T) {
 		}
 	}
 
-	_, err := Search("h")
-	if err == nil {
-		t.Errorf("Search(\"h\") did not return an error")
+	invalid := []string{
+		"",
+		"h",
+		"c%",
+	}
+	for _, note := range invalid {
+		_, err := Search(note)
+		if err == nil {
+			t.Errorf("Search(\"%s\") did not return an error", note)
+		}
 	}
 }
 
