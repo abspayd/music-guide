@@ -6,6 +6,7 @@ import (
 	"os"
 	"regexp"
 	"strconv"
+	"strings"
 
 	"github.com/abspayd/music-companion/music"
 )
@@ -125,7 +126,7 @@ func handleValidateNote(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
-	pitch := r.FormValue(inputName)
+	pitch := strings.Trim(r.FormValue(inputName), " ")
 	_, err = music.Search(pitch)
 	if err != nil {
 		inputError := &InputField{

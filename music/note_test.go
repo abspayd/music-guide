@@ -1,8 +1,8 @@
 package music
 
 import (
-	"testing"
 	"math"
+	"testing"
 )
 
 func TestSearch(t *testing.T) {
@@ -16,6 +16,9 @@ func TestSearch(t *testing.T) {
 		"gb":  6,
 		"cbb": 10,
 		"b":   11,
+		"c ":  0,
+		" c":  0,
+		" c ":  0,
 	}
 	for note, expected := range test {
 		res, _ := Search(note)
@@ -28,6 +31,7 @@ func TestSearch(t *testing.T) {
 		"",
 		"h",
 		"c%",
+		"c #",
 	}
 	for _, note := range invalid {
 		_, err := Search(note)

@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"regexp"
+	"strings"
 )
 
 type Note struct {
@@ -48,11 +49,12 @@ func (n Note) ToString() string {
 * Get the index of a pitch from its string value
  */
 func Search(pitchString string) (int, error) {
-	validPitch := regexp.MustCompile("^[a-gA-G][#b]*$")
+	validPitch := regexp.MustCompile("^\\s*[a-gA-G][#b]*\\s*$")
 	m := validPitch.MatchString(pitchString)
 	if !m {
 		return -1, errors.New(fmt.Sprintf("Invalid pitch: %s", pitchString))
 	}
+	pitchString = strings.Trim(pitchString, " ")
 
 	// Get values for basic notes (no sharps or flats)
 	i := (int(pitchString[0]+6) % 7) * 2
