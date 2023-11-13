@@ -23,7 +23,7 @@ docker-run:
 docker-clean:
 	docker rm ${IMAGE_NAME}
 
-docker-export:
+docker-buildx:
 	docker buildx create --driver=docker-container \
 		--name=builder --bootstrap --use
 	docker buildx build --platform linux/amd64,linux/arm64 --tag ${USER}/${IMAGE_NAME}:${VERSION} --push .

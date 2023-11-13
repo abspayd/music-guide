@@ -1,6 +1,7 @@
 package music
 
 import (
+	"math"
 	"testing"
 )
 
@@ -15,8 +16,10 @@ func TestSearch(t *testing.T) {
 		"gb":  6,
 		"cbb": 10,
 		"b":   11,
+		"c ":  0,
+		" c":  0,
+		" c ":  0,
 	}
-
 	for note, expected := range test {
 		res, _ := Search(note)
 		if res != expected {
@@ -24,18 +27,31 @@ func TestSearch(t *testing.T) {
 		}
 	}
 
-	_, err := Search("h")
-	if err == nil {
-		t.Errorf("Search(\"h\") did not return an error")
+	invalid := []string{
+		"",
+		"h",
+		"c%",
+		"c #",
+	}
+	for _, note := range invalid {
+		_, err := Search(note)
+		if err == nil {
+			t.Errorf("Search(\"%s\") did not return an error", note)
+		}
 	}
 }
 
 func TestGetInterval(t *testing.T) {
-	c := Note{Pitch: 0, Octave: 0}
-	test := map[Note]int{}
+	octavesToTest := 3
+	for j := 0; j < 12; j++ {
+		n1 := Note{Pitch: j, Octave: 0} // Base to get intervals from
+		for i := 0; i < 12*octavesToTest; i++ {
+			n2 := Note{Pitch: i % 12, Octave: int(i / 12)}
+			interval := n1.GetInterval(n2)
 
-	for note, expected := range test {
-		c.GetInterval(note)
-		_ = expected
+			if interval != int(math.Abs(float64(i-j))) {
+				t.Errorf("(Note%+v).GetInterval(Note%+v) = %d; expected %d", n1, n2, interval, i)
+			}
+		}
 	}
 }

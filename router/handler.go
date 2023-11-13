@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"os"
 	"regexp"
+	"strconv"
+	"strings"
 
 	"github.com/abspayd/music-companion/music"
 )
@@ -13,6 +15,12 @@ var (
 	validPath = regexp.MustCompile("^/(home|intervals)$")
 	templates = loadTemplates()
 )
+
+type InputField struct {
+	WhichPitch int
+	Value      string
+	Error      string
+}
 
 func loadTemplates() *template.Template {
 	tmplFS := os.DirFS("./tmpl")
@@ -60,29 +68,79 @@ func handleIndex(w http.ResponseWriter, r *http.Request, tmpl string) {
 
 func handleIntervals(w http.ResponseWriter, r *http.Request, tmpl string) {
 	if r.Method == http.MethodGet {
-		renderTemplate(w, tmpl+".html", nil)
+		// Create initial fields for inputs
+		inputs := []InputField{
+			{
+				Value:      "",
+				WhichPitch: 1,
+				Error:      "",
+			},
+			{
+				Value:      "",
+				WhichPitch: 2,
+				Error:      "",
+			},
+		}
+
+		renderTemplate(w, tmpl+".html", inputs)
 	} else if r.Method == http.MethodPost {
 		p1 := r.FormValue("pitch1")
 		p2 := r.FormValue("pitch2")
 
-		idx1, _ := music.Search(p1)
-		idx2, _ := music.Search(p2)
+		idx1, err1 := music.Search(p1)
+		idx2, err2 := music.Search(p2)
+		if err1 != nil || err2 != nil {
+			http.Error(w, "Invalid pitch received.", http.StatusBadRequest)
+			return
+		}
 
 		note1 := music.Note{Pitch: idx1, Octave: 0}
 		note2 := music.Note{Pitch: idx2, Octave: 0}
 
-		interval := note1.GetInterval(note2)
-		intervalString := music.IntervalToString(interval)
+		if note1.Pitch > note2.Pitch {
+			// Make the first pitch always treated
+			// as an octave below the second
+			note2.Octave++
+		}
 
-		templates.ExecuteTemplate(w, "intervalResult", intervalString)
+		type Interval struct {
+			Distance int
+			String   string
+		}
+
+		interval := &Interval{}
+		interval.Distance = note1.GetInterval(note2)
+		interval.String = music.IntervalToString(interval.Distance)
+
+		templates.ExecuteTemplate(w, "intervalResult", interval)
 	}
 }
 
 func handleValidateNote(w http.ResponseWriter, r *http.Request) {
-	pitch := "c" // r.PostForm
-	_, err := music.Search(pitch)
+	inputName := r.Header["Hx-Trigger-Name"][0]
+	inputIdentifier, err := regexp.Compile("[0-9]+")
 	if err != nil {
-		w.Write([]byte(err.Error()))
+		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
-	// w.Write([]byte("Validating input..."))
+	whichPitch, err := strconv.Atoi(inputIdentifier.FindString(inputName))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+	pitch := strings.Trim(r.FormValue(inputName), " ")
+	_, err = music.Search(pitch)
+	if err != nil {
+		inputError := &InputField{
+			WhichPitch: whichPitch,
+			Value:      pitch,
+			Error:      "Invalid pitch",
+		}
+		templates.ExecuteTemplate(w, "invalidateNote", inputError)
+	} else {
+		input := &InputField{
+			WhichPitch: whichPitch,
+			Value:      pitch,
+			Error:      "",
+		}
+		templates.ExecuteTemplate(w, "noteInput", input)
+	}
 }

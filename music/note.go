@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"regexp"
+	"strings"
 )
 
 type Note struct {
@@ -48,12 +49,12 @@ func (n Note) ToString() string {
 * Get the index of a pitch from its string value
  */
 func Search(pitchString string) (int, error) {
-
-	validPitch := regexp.MustCompile("^[a-gA-G][#,b]*$")
+	validPitch := regexp.MustCompile("^\\s*[a-gA-G][#b]*\\s*$")
 	m := validPitch.MatchString(pitchString)
 	if !m {
 		return -1, errors.New(fmt.Sprintf("Invalid pitch: %s", pitchString))
 	}
+	pitchString = strings.Trim(pitchString, " ")
 
 	// Get values for basic notes (no sharps or flats)
 	i := (int(pitchString[0]+6) % 7) * 2
@@ -87,19 +88,33 @@ func PitchToString(pitch int, asFlat bool) string {
 }
 
 func IntervalToString(interval int) string {
-	// TODO: support P8 and above
 	intervals := []string{
-		"",
-		"m2",
-		"M2",
-		"m3",
-		"M3",
-		"P4",
-		"tri",
-		"P5",
-		"m6",
-		"M6",
-		"m7",
-		"M7"}
+		"Perfect Unison",
+		"Minor second",
+		"Major second",
+		"Minor third",
+		"Major third",
+		"Perfect fourth",
+		"Tritone",
+		"Perfect fifth",
+		"Minor sixth",
+		"Major sixth",
+		"Minor seventh",
+		"Major seventh",
+		"Perfect Octave",
+		"Minor ninth",
+		"Major ninth",
+		"Minor tenth",
+		"Major tenth",
+		"Perfect eleventh",
+		"Tritone",
+		"Perfect twelfth",
+		"Minor thirteenth",
+		"Major thirteenth",
+		"Minor fourteenth",
+		"Major fourteenth",
+		"15va",
+	}
+
 	return intervals[interval%len(intervals)]
 }

@@ -1,13 +1,14 @@
 {{template "header"}}
 
 <div class="container max-w-fit mx-auto">
-	<div class="my-3 px-16 bg-slate-800 shadow-xl rounded-lg">
+	<div class="my-3 px-12 bg-slate-700 shadow-xl rounded-lg">
 
-		<h1 class="h-10 text-lg pl-6 pt-6">Interval finder</h1>
+		<h1 class="h-10 text-slate-100 text-lg pl-6 pt-6">Interval Calculator</h1>
 		<form class="p-6" hx-post="/intervals" hx-swap="outerHTML" hx-target="#result">
 			<div class="flex space-x-4 mb-3">
-				<input class="text-input" id="pitch1" type="text" name="pitch1" placeholder="Note 1">
-				<input class="text-input" id="pitch2" type="text" name="pitch2" placeholder="Note 2">
+				{{range .}}
+					{{template "noteInput" .}}
+				{{end}}
 			</div>
 
 			<button class="btn-primary" type="submit">
@@ -20,13 +21,27 @@
 
 </div>
 
-{{template "footer"}}
+{{define "noteInput"}}
+<div hx-target="this" hx-swap="outerHTML">
+	<input class="text-input" id="pitch{{.WhichPitch}}" type="text" name="pitch{{.WhichPitch}}" placeholder="Note {{.WhichPitch}}"
+		hx-post="/validateNote/pitch{{.WhichPitch}}" hx-trigger="change" hx-sync="closest form:drop" value="{{.Value}}">
+</div>
+{{end}}
+{{define "invalidateNote"}}
+<div hx-target="this" hx-swap="outerHTML">
+	<input class="text-input ring-1 ring-red-600" id="pitch{{.WhichPitch}}" type="text" name="pitch{{.WhichPitch}}" value="{{.Value}}"
+		placeholder="Note {{.WhichPitch}}" hx-post="/validateNote/pitch{{.WhichPitch}}" hx-trigger="change" hx-sync="closest form:drop">
+	<p class="block text-red-600">{{.Error}}</p>
+</div>
+{{end}}
 
 {{define "intervalResult"}}
-<div id="result" class="h-12 pl-6 rounded-lg shadow-xl bg-slate-400 text-gray-800">
+<div id="result" class="h-12 pl-6 rounded-lg shadow-xl bg-slate-300 text-gray-800">
 	<div class="flex h-full w-fit">
-		<span class="my-auto mr-1">Interval:</span>
-		<div class="my-auto">{{.}}</div>
+		<div class="pl-12 my-auto font-bold">({{.Distance}}) {{.String}}</div>
 	</div>
 </div>
 {{end}}
+
+{{template "footer"}}
+
