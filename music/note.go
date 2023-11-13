@@ -54,7 +54,7 @@ func Search(pitchString string) (int, error) {
 	if !m {
 		return -1, errors.New(fmt.Sprintf("Invalid pitch: %s", pitchString))
 	}
-	pitchString = strings.Trim(pitchString, " ")
+	pitchString = strings.ToLower(strings.Trim(pitchString, " ")) // Trim whitespaces and lower case
 
 	// Get values for basic notes (no sharps or flats)
 	i := (int(pitchString[0]+6) % 7) * 2
