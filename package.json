@@ -1,7 +1,8 @@
 {
 	"scripts": {
 		"build": "tailwind -i ./assets/css/index.css -o ./static/css/output.css",
-		"watch": "tailwind -i ./assets/css/index.css -o ./static/css/output.css --watch"
+		"watch": "tailwind -i ./assets/css/index.css -o ./static/css/output.css --watch",
+		"publish": "tailwind -i ./assets/css/index.css -o ./static/css/output.css -m"
 	},
 	"devDependencies": {
 		"@tailwindcss/forms": "^0.5.7",
