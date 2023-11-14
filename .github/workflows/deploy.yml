@@ -20,7 +20,7 @@ jobs:
       - name: Tailwindcss
         run: |
           npm install -D tailwindcss
-          npm run build
+          npm run publish
       - name: Docker Login
         uses: docker/login-action@v3.0.0
         with:
