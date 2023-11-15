@@ -1,6 +1,7 @@
 package router
 
 import (
+	"fmt"
 	"html/template"
 	"net/http"
 	"os"
@@ -77,10 +78,17 @@ func handleGetIntervals(w http.ResponseWriter, r *http.Request, tmpl string) {
 		},
 	}
 
+	// Delete history on new page request
+	history, err := r.Cookie("intervals-session")
+	if err == nil {
+		history.MaxAge = -1
+		http.SetCookie(w, history)
+	}
+
 	renderTemplate(w, tmpl+".html", inputs)
 }
 
-func handlePostIntervals(w http.ResponseWriter, r *http.Request, tmpl string) {
+func handlePostIntervals(w http.ResponseWriter, r *http.Request) {
 	p1 := r.FormValue("pitch1")
 	p2 := r.FormValue("pitch2")
 
@@ -100,28 +108,32 @@ func handlePostIntervals(w http.ResponseWriter, r *http.Request, tmpl string) {
 		note2.Octave++
 	}
 
-	type Interval struct {
-		FirstPitch  string
-		SecondPitch string
-		Distance    int
-		String      string
-	}
+	distance := note1.GetInterval(note2)
+	intervalName := music.IntervalToString(distance)
 
-	interval := &Interval{
-		FirstPitch:  p1,
-		SecondPitch: p2,
-		Distance:    note1.GetInterval(note2),
-	}
-	interval.String = music.IntervalToString(interval.Distance)
+	buffer := [2]string{}
+	buffer[0] = fmt.Sprintf("(%d) %s [%s -> %s]", distance, intervalName, p1, p2)
 
-	templates.ExecuteTemplate(w, "intervalResult", interval)
+	// Remember the last answer
+	cookie, err := r.Cookie("intervals-session")
+	if err == nil {
+		buffer[1] = cookie.Value
+	}
+	cookie = &http.Cookie{
+		Name:  "intervals-session",
+		Value: buffer[0],
+		MaxAge: 0,
+	}
+	http.SetCookie(w, cookie)
+
+	templates.ExecuteTemplate(w, "intervalResult", buffer)
 }
 
 func handleIntervals(w http.ResponseWriter, r *http.Request, tmpl string) {
 	if r.Method == http.MethodGet {
 		handleGetIntervals(w, r, tmpl)
 	} else if r.Method == http.MethodPost {
-		handlePostIntervals(w, r, tmpl)
+		handlePostIntervals(w, r)
 	}
 }
 
@@ -145,9 +157,9 @@ func handleValidateNote(w http.ResponseWriter, r *http.Request) {
 		Value:      pitch,
 		Error:      "",
 	}
-	if err != nil {
+	if err != nil || len(pitch) > 4 {
 		input.Error = "Invalid pitch"
-		templates.ExecuteTemplate(w, "invalidateNote", input)
+		templates.ExecuteTemplate(w, "invalidNote", input)
 	} else {
 		templates.ExecuteTemplate(w, "noteInput", input)
 	}
