@@ -58,65 +58,75 @@ func handleDefault(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func handleStatic(w http.ResponseWriter, r *http.Request) {
-
-}
-
 func handleIndex(w http.ResponseWriter, r *http.Request, tmpl string) {
 	renderTemplate(w, tmpl+".html", nil)
 }
 
+func handleGetIntervals(w http.ResponseWriter, r *http.Request, tmpl string) {
+	// Create initial fields for inputs
+	inputs := []InputField{
+		{
+			Value:      "",
+			WhichPitch: 1,
+			Error:      "",
+		},
+		{
+			Value:      "",
+			WhichPitch: 2,
+			Error:      "",
+		},
+	}
+
+	renderTemplate(w, tmpl+".html", inputs)
+}
+
+func handlePostIntervals(w http.ResponseWriter, r *http.Request, tmpl string) {
+	p1 := r.FormValue("pitch1")
+	p2 := r.FormValue("pitch2")
+
+	idx1, err1 := music.Search(p1)
+	idx2, err2 := music.Search(p2)
+	if err1 != nil || err2 != nil {
+		http.Error(w, "Invalid pitch received.", http.StatusBadRequest)
+		return
+	}
+
+	note1 := music.Note{Pitch: idx1, Octave: 0}
+	note2 := music.Note{Pitch: idx2, Octave: 0}
+
+	if note1.Pitch > note2.Pitch {
+		// Make the first pitch always treated
+		// as an octave below the second
+		note2.Octave++
+	}
+
+	type Interval struct {
+		FirstPitch  string
+		SecondPitch string
+		Distance    int
+		String      string
+	}
+
+	interval := &Interval{
+		FirstPitch:  p1,
+		SecondPitch: p2,
+		Distance:    note1.GetInterval(note2),
+	}
+	interval.String = music.IntervalToString(interval.Distance)
+
+	templates.ExecuteTemplate(w, "intervalResult", interval)
+}
+
 func handleIntervals(w http.ResponseWriter, r *http.Request, tmpl string) {
 	if r.Method == http.MethodGet {
-		// Create initial fields for inputs
-		inputs := []InputField{
-			{
-				Value:      "",
-				WhichPitch: 1,
-				Error:      "",
-			},
-			{
-				Value:      "",
-				WhichPitch: 2,
-				Error:      "",
-			},
-		}
-
-		renderTemplate(w, tmpl+".html", inputs)
+		handleGetIntervals(w, r, tmpl)
 	} else if r.Method == http.MethodPost {
-		p1 := r.FormValue("pitch1")
-		p2 := r.FormValue("pitch2")
-
-		idx1, err1 := music.Search(p1)
-		idx2, err2 := music.Search(p2)
-		if err1 != nil || err2 != nil {
-			http.Error(w, "Invalid pitch received.", http.StatusBadRequest)
-			return
-		}
-
-		note1 := music.Note{Pitch: idx1, Octave: 0}
-		note2 := music.Note{Pitch: idx2, Octave: 0}
-
-		if note1.Pitch > note2.Pitch {
-			// Make the first pitch always treated
-			// as an octave below the second
-			note2.Octave++
-		}
-
-		type Interval struct {
-			Distance int
-			String   string
-		}
-
-		interval := &Interval{}
-		interval.Distance = note1.GetInterval(note2)
-		interval.String = music.IntervalToString(interval.Distance)
-
-		templates.ExecuteTemplate(w, "intervalResult", interval)
+		handlePostIntervals(w, r, tmpl)
 	}
 }
 
 func handleValidateNote(w http.ResponseWriter, r *http.Request) {
+	// Find which input this is validating
 	inputName := r.Header["Hx-Trigger-Name"][0]
 	inputIdentifier, err := regexp.Compile("[0-9]+")
 	if err != nil {
@@ -126,21 +136,19 @@ func handleValidateNote(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
+
+	// Validate the pitch
 	pitch := strings.Trim(r.FormValue(inputName), " ")
 	_, err = music.Search(pitch)
+	input := &InputField{
+		WhichPitch: whichPitch,
+		Value:      pitch,
+		Error:      "",
+	}
 	if err != nil {
-		inputError := &InputField{
-			WhichPitch: whichPitch,
-			Value:      pitch,
-			Error:      "Invalid pitch",
-		}
-		templates.ExecuteTemplate(w, "invalidateNote", inputError)
+		input.Error = "Invalid pitch"
+		templates.ExecuteTemplate(w, "invalidateNote", input)
 	} else {
-		input := &InputField{
-			WhichPitch: whichPitch,
-			Value:      pitch,
-			Error:      "",
-		}
 		templates.ExecuteTemplate(w, "noteInput", input)
 	}
 }
