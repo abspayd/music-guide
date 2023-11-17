@@ -9,7 +9,8 @@ func HandleRoutes() {
 	http.HandleFunc("/home", makeHandler(handleIndex))
 	http.HandleFunc("/intervals", makeHandler(handleIntervals))
 
-	http.HandleFunc("/validateNote/", handleValidateNote)
+	http.HandleFunc("/intervalsValidation/", handleIntervalsValidation)
+	http.HandleFunc("/intervalsOctaveModeToggle", handleOctaveMode)
 
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 }
