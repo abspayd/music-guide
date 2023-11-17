@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+	body {
+		@apply font-sans bg-slate-800;
+	}
+
+	/* Remove number input buttons */
+	input[type='number']::-webkit-inner-spin-button,
+	input[type='number']::-webkit-outer-spin-button {
+		-webkit-appearance: none;
+		margin: 0;
+	}
+}
+
+@layer components {
+	.btn-primary {
+		@apply text-slate-100
+				px-4
+				py-2
+				bg-sky-600
+				hover:bg-sky-500
+				font-semibold
+				text-sm
+				rounded-md
+				shadow-sm;
+	}
+}
+
