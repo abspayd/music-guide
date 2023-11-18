@@ -9,7 +9,6 @@ import (
 )
 
 func main() {
-
 	port := 3000
 	fmt.Printf("Starting server on port %d.\n", port)
 	router.HandleRoutes()
