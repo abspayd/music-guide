@@ -5,6 +5,8 @@ IMAGE_NAME=music-companion
 VERSION=latest
 PORT=3000
 
+default: help
+
 build:
 	go build -o ${EXE} ${PROJECT_PATH}
 
@@ -37,3 +39,16 @@ deploy:
 
 clean:
 	rm ${EXE}
+
+help:
+	@echo "    Make options"
+	@echo "===================="
+	@echo " - build 		build the go binary ${EXE}"
+	@echo " - run 			execute the project binary"
+	@echo " - test 		run go tests"
+	@echo " - docker-build 	build docker image"
+	@echo " - docker-run 		run docker image"
+	@echo " - docker-clean 	clean docker images"
+	@echo " - docker-buildx	build and push docker images (multi-platform)"
+	@echo " - deploy 		deploy to server host"
+	@echo " - clean		remove binary"
