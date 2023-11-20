@@ -20,6 +20,7 @@ var (
 	flatNotes  = []string{"c", "db", "d", "eb", "e", "f", "gb", "g", "ab", "a", "bb", "b"}
 )
 
+// Get the interval between two Notes
 func (n Note) GetInterval(n2 Note) int {
 	interval := (n2.Pitch + n2.Octave*12) - (n.Pitch + n.Octave*12)
 
@@ -30,19 +31,15 @@ func (n Note) GetInterval(n2 Note) int {
 	return interval
 }
 
+// Find the note at a specific interval above the current note
 func (n Note) GetNoteAtInterval(interval int) Note {
-	note := Note{Octave: 1, Pitch: 0}
-	return note
-}
-
-func (n Note) PrintNote() {
-	pitch := PitchToString(n.Pitch, false)
-	fmt.Printf("%s%d\n", pitch, n.Octave)
-}
-
-func (n Note) ToString() string {
-	pitch := PitchToString(n.Pitch, false)
-	return fmt.Sprintf("%s%d", pitch, n.Octave)
+	pitch := (n.Pitch + interval) % 12
+	octave := int((n.Pitch + interval) / 12) + n.Octave
+	n2 := Note{
+		Pitch: pitch,
+		Octave: octave,
+	}
+	return n2
 }
 
 /**

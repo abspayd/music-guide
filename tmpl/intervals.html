@@ -50,6 +50,28 @@
 
 </div>
 
+<div class="container w-1/2 mx-auto">
+
+	<div class="my-3 bg-slate-700 shadow-xl rounded-lg">
+
+		<div class="container w-fit mx-auto">
+			<h1 class="h-10 text-slate-100 text-lg pl-6 pt-6">Get note at interval</h1>
+			<form class="p-6" hx-post="/intervals" hx-swap="innerHTML" hx-target="#results">
+				<div id="inputs" class="flex space-x-3 mb-3">
+					{{template "basicNoteInput" index . 0}}
+				</div>
+
+				<button class="btn-primary" type="submit">
+					Get interval
+				</button>
+			</form>
+		</div>
+	</div>
+
+	<div id="results"></div>
+
+</div>
+
 {{template "footer"}}
 
 {{define "intervalsBasic"}}
