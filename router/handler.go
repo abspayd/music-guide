@@ -44,7 +44,7 @@ func validPathMatches(paths map[string][]string) *regexp.Regexp {
 		roots += root + "|"
 	}
 	roots = roots[0 : len(roots)-1] // trim trailing "|"
-	r += roots + `)(/\w+)*$`
+	r += roots + `)(?:/(\w+))*$`
 
 	return regexp.MustCompile(r)
 }
