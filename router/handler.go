@@ -1,6 +1,7 @@
 package router
 
 import (
+	"errors"
 	"fmt"
 	"html/template"
 	"net/http"
@@ -13,7 +14,18 @@ import (
 )
 
 var (
-	validPath = regexp.MustCompile("^/(home|intervals)$")
+	// Map of valid URL paths and their valid subpaths
+	pathMap = map[string][]string{
+		"intervals": {
+			"validation",
+			"octaveModeToggle",
+		},
+		"home": {
+			// No subpaths
+		},
+	}
+
+	validPath = validPathMatches(pathMap)
 	templates = loadTemplates()
 )
 
@@ -23,11 +35,24 @@ type InputField struct {
 	Error string
 }
 
+// Build regexp to match valid paths
+func validPathMatches(paths map[string][]string) *regexp.Regexp {
+	r := `^/(`
+
+	var roots string
+	for root := range pathMap {
+		roots += root + "|"
+	}
+	roots = roots[0 : len(roots)-1] // trim trailing "|"
+	r += roots + `)(/\w+)*$`
+
+	return regexp.MustCompile(r)
+}
+
+// Load templates from the tmpl directory
 func loadTemplates() *template.Template {
 	funcMap := template.FuncMap{
-		"add": func(x int, y int) int {
-			return x + y
-		},
+		// Any custom template functions go here
 	}
 
 	tmplFS := os.DirFS("./tmpl")
@@ -37,18 +62,51 @@ func loadTemplates() *template.Template {
 	return template.Must(tmpls, err)
 }
 
-func makeHandler(fn func(http.ResponseWriter, *http.Request, string)) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		m := validPath.FindStringSubmatch(r.URL.Path)
+// Validate the path of a request
+func validatePath(path string) ([]string, error) {
+	m := validPath.FindStringSubmatch(path)
+	if m == nil {
+		return nil, errors.New("Invalid path")
+	}
 
-		if m == nil {
+	fmt.Printf("m: %v\n", m)
+
+	return m, nil
+}
+
+// Create a handler with URL path validation
+// 
+// Renders a template with the same name as the base path
+func makeHandlerWithTemplate(fn func(http.ResponseWriter, *http.Request, string)) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		m, err := validatePath(r.URL.Path)
+		if err != nil {
 			http.NotFound(w, r)
 			return
 		}
+
 		fn(w, r, m[1])
 	}
 }
 
+// Create a basic handler with URL path validation
+func makeHandler(fn func(http.ResponseWriter, *http.Request)) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		m, err := validatePath(r.URL.Path)
+		_ = m
+		if err != nil {
+			http.NotFound(w, r)
+			return
+		}
+
+		// Make sure m has valid subpaths
+		// TODO: Implement subpath validation
+
+		fn(w, r)
+	}
+}
+
+// Render a template with data
 func renderTemplate(w http.ResponseWriter, tmpl string, data any) {
 	err := templates.ExecuteTemplate(w, tmpl, data)
 	if err != nil {
@@ -57,6 +115,7 @@ func renderTemplate(w http.ResponseWriter, tmpl string, data any) {
 	}
 }
 
+// Handle the default path
 func handleDefault(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path == "/" {
 		// Redirect "/" to "/home"
@@ -68,10 +127,12 @@ func handleDefault(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// Handle the home page
 func handleIndex(w http.ResponseWriter, r *http.Request, tmpl string) {
 	renderTemplate(w, tmpl+".html", nil)
 }
 
+// Handle the intervals page
 func handleGetIntervals(w http.ResponseWriter, r *http.Request, tmpl string) {
 	// Create initial fields for inputs
 	inputs := []InputField{
@@ -97,6 +158,7 @@ func handleGetIntervals(w http.ResponseWriter, r *http.Request, tmpl string) {
 	renderTemplate(w, tmpl+".html", inputs)
 }
 
+// Handle form submissions to the intervals page
 func handlePostIntervals(w http.ResponseWriter, r *http.Request) {
 	p1 := r.FormValue("pitch1")
 	p2 := r.FormValue("pitch2")
@@ -143,6 +205,7 @@ func handlePostIntervals(w http.ResponseWriter, r *http.Request) {
 	templates.ExecuteTemplate(w, "intervalResult", buffer)
 }
 
+// Route interval handler based on request method
 func handleIntervals(w http.ResponseWriter, r *http.Request, tmpl string) {
 	if r.Method == http.MethodGet {
 		handleGetIntervals(w, r, tmpl)
@@ -151,6 +214,7 @@ func handleIntervals(w http.ResponseWriter, r *http.Request, tmpl string) {
 	}
 }
 
+// Handle validation requests for the intervals page
 func handleIntervalsValidation(w http.ResponseWriter, r *http.Request) {
 	// Find which input this is validating
 	inputName := r.Header["Hx-Trigger-Name"][0]
@@ -176,6 +240,7 @@ func handleIntervalsValidation(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// Handle octave mode toggle requests for the intervals page
 func handleOctaveMode(w http.ResponseWriter, r *http.Request) {
 	// Replace form inputs
 	switchValue := r.FormValue("advanced")
@@ -220,6 +285,7 @@ func handleOctaveMode(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// Handle note validation requests for the intervals page
 func handleValidateNote(w http.ResponseWriter, r *http.Request, id int) {
 	// Validate the pitch
 	inputName := fmt.Sprintf("pitch%d", id)
@@ -239,6 +305,7 @@ func handleValidateNote(w http.ResponseWriter, r *http.Request, id int) {
 	}
 }
 
+// Handle octave validation requests for the intervals page
 func handleValidateOctave(w http.ResponseWriter, r *http.Request, id int) {
 	inputName := fmt.Sprintf("octave%d", id)
 	inputString := r.FormValue(inputName)
