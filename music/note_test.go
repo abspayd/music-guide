@@ -44,9 +44,9 @@ func TestSearch(t *testing.T) {
 func TestGetInterval(t *testing.T) {
 	octavesToTest := 3
 	for j := 0; j < 12; j++ {
-		n1 := Note{Pitch: j, Octave: 0} // Base to get intervals from
+		n1 := Pitch{Note: j, Octave: 0} // Base to get intervals from
 		for i := 0; i < 12*octavesToTest; i++ {
-			n2 := Note{Pitch: i % 12, Octave: int(i / 12)}
+			n2 := Pitch{Note: i % 12, Octave: int(i / 12)}
 			interval := n1.GetInterval(n2)
 
 			if interval != int(math.Abs(float64(i-j))) {

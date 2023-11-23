@@ -7,9 +7,9 @@ import (
 	"strings"
 )
 
-type Note struct {
+type Pitch struct {
 	Octave int
-	Pitch  int
+	Note  int
 }
 
 var (
@@ -21,8 +21,8 @@ var (
 )
 
 // Get the interval between two Notes
-func (n Note) GetInterval(n2 Note) int {
-	interval := (n2.Pitch + n2.Octave*12) - (n.Pitch + n.Octave*12)
+func (p Pitch) GetInterval(p2 Pitch) int {
+	interval := (p2.Note + p2.Octave*12) - (p.Note + p.Octave*12)
 
 	if interval < 0 {
 		interval *= -1
@@ -31,41 +31,41 @@ func (n Note) GetInterval(n2 Note) int {
 	return interval
 }
 
-// Find the note at a specific interval above the current note
-func (n Note) GetNoteAtInterval(interval int) Note {
-	pitch := (n.Pitch + interval) % 12
-	octave := int((n.Pitch + interval) / 12) + n.Octave
-	n2 := Note{
-		Pitch: pitch,
+// Find the pitch at a specific interval above the current note
+func (p Pitch) GetPitchAtInterval(interval int) Pitch {
+	note := (p.Note + interval) % 12
+	octave := int((p.Note + interval) / 12) + p.Octave
+	p2 := Pitch{
+		Note: note,
 		Octave: octave,
 	}
-	return n2
+	return p2
 }
 
 /**
 * Get the index of a pitch from its string value
  */
-func Search(pitchString string) (int, error) {
+func Search(noteString string) (int, error) {
 	validPitch := regexp.MustCompile("^\\s*[a-gA-G][#b]*\\s*$")
-	m := validPitch.MatchString(pitchString)
+	m := validPitch.MatchString(noteString)
 	if !m {
-		return -1, errors.New(fmt.Sprintf("Invalid pitch: %s", pitchString))
+		return -1, errors.New(fmt.Sprintf("Invalid pitch: %s", noteString))
 	}
-	pitchString = strings.ToLower(strings.Trim(pitchString, " ")) // Trim whitespaces and lower case
+	noteString = strings.ToLower(strings.Trim(noteString, " ")) // Trim whitespaces and lower case
 
 	// Get values for basic notes (no sharps or flats)
-	i := (int(pitchString[0]+6) % 7) * 2
+	i := (int(noteString[0]+6) % 7) * 2
 	if i > 4 {
 		i--
 	}
 	// increment pitch by 1 for every sharp;
 	// decrement pitch by 1 for every flat
-	l := len(pitchString)
+	l := len(noteString)
 	if l > 1 {
 		for j := 1; j < l; j++ {
-			if pitchString[j] == '#' {
+			if noteString[j] == '#' {
 				i = (i + 1) % 12
-			} else if pitchString[j] == 'b' {
+			} else if noteString[j] == 'b' {
 				i = (i + 11) % 12 // Wrap-around subtraction
 			}
 		}
@@ -73,15 +73,15 @@ func Search(pitchString string) (int, error) {
 	return i, nil
 }
 
-func PitchToString(pitch int, asFlat bool) string {
-	var pitches []string
+func NoteToString(note int, asFlat bool) string {
+	var notes []string
 	if asFlat {
-		pitches = flatNotes
+		notes = flatNotes
 	} else {
-		pitches = sharpNotes
+		notes = sharpNotes
 	}
 
-	return pitches[pitch%len(pitches)]
+	return notes[note%len(notes)]
 }
 
 func IntervalToString(interval int) string {

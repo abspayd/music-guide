@@ -1,8 +1,7 @@
 package router
 
 import (
-	"errors"
-	"fmt"
+	"encoding/json"
 	"html/template"
 	"net/http"
 	"os"
@@ -25,7 +24,6 @@ var (
 		},
 	}
 
-	validPath = validPathMatches(pathMap)
 	templates = loadTemplates()
 )
 
@@ -35,18 +33,11 @@ type InputField struct {
 	Error string
 }
 
-// Build regexp to match valid paths
-func validPathMatches(paths map[string][]string) *regexp.Regexp {
-	r := `^/(`
-
-	var roots string
-	for root := range pathMap {
-		roots += root + "|"
-	}
-	roots = roots[0 : len(roots)-1] // trim trailing "|"
-	r += roots + `)(?:/(\w+))*$`
-
-	return regexp.MustCompile(r)
+type IntervalResult struct {
+	IntervalName string `json:"interval_name"`
+	Distance     int    `json:"distance"`
+	Note1        string `json:"note1"`
+	Note2        string `json:"note2"`
 }
 
 // Load templates from the tmpl directory
@@ -62,20 +53,8 @@ func loadTemplates() *template.Template {
 	return template.Must(tmpls, err)
 }
 
-// Validate the path of a request
-func validatePath(path string) ([]string, error) {
-	m := validPath.FindStringSubmatch(path)
-	if m == nil {
-		return nil, errors.New("Invalid path")
-	}
-
-	fmt.Printf("m: %v\n", m)
-
-	return m, nil
-}
-
 // Create a handler with URL path validation
-// 
+//
 // Renders a template with the same name as the base path
 func makeHandlerWithTemplate(fn func(http.ResponseWriter, *http.Request, string)) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -85,22 +64,18 @@ func makeHandlerWithTemplate(fn func(http.ResponseWriter, *http.Request, string)
 			return
 		}
 
-		fn(w, r, m[1])
+		fn(w, r, m[0])
 	}
 }
 
 // Create a basic handler with URL path validation
 func makeHandler(fn func(http.ResponseWriter, *http.Request)) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		m, err := validatePath(r.URL.Path)
-		_ = m
+		_, err := validatePath(r.URL.Path)
 		if err != nil {
 			http.NotFound(w, r)
 			return
 		}
-
-		// Make sure m has valid subpaths
-		// TODO: Implement subpath validation
 
 		fn(w, r)
 	}
@@ -149,60 +124,76 @@ func handleGetIntervals(w http.ResponseWriter, r *http.Request, tmpl string) {
 	}
 
 	// Delete history on new page request
-	history, err := r.Cookie("intervals-session")
-	if err == nil {
-		history.MaxAge = -1
-		http.SetCookie(w, history)
-	}
+	// history, err := r.Cookie("intervals-session")
+	// if err == nil {
+	// 	history.MaxAge = -1
+	// 	http.SetCookie(w, history)
+	// }
 
 	renderTemplate(w, tmpl+".html", inputs)
 }
 
 // Handle form submissions to the intervals page
 func handlePostIntervals(w http.ResponseWriter, r *http.Request) {
-	p1 := r.FormValue("pitch1")
-	p2 := r.FormValue("pitch2")
+	n1 := r.FormValue("note1")
+	n2 := r.FormValue("note2")
 	o1 := r.FormValue("octave1")
 	o2 := r.FormValue("octave2")
 
-	idx1, err1 := music.Search(p1)
-	idx2, err2 := music.Search(p2)
+	idx1, err1 := music.Search(n1)
+	idx2, err2 := music.Search(n2)
 	if err1 != nil || err2 != nil {
-		http.Error(w, "Invalid pitch received.", http.StatusBadRequest)
+		http.Error(w, "Invalid note received.", http.StatusBadRequest)
 		return
 	}
 
 	octave1, _ := strconv.Atoi(o1)
 	octave2, _ := strconv.Atoi(o2)
 
-	note1 := music.Note{Pitch: idx1, Octave: octave1}
-	note2 := music.Note{Pitch: idx2, Octave: octave2}
+	pitch1 := music.Pitch{Note: idx1, Octave: octave1}
+	pitch2 := music.Pitch{Note: idx2, Octave: octave2}
 
-	if note1.Pitch > note2.Pitch {
+	if pitch1.Note > pitch2.Note {
 		// Make the first pitch always treated
 		// as an octave below the second
-		note2.Octave++
+		pitch2.Octave++
 	}
 
-	distance := note1.GetInterval(note2)
+	distance := pitch1.GetInterval(pitch2)
 	intervalName := music.IntervalToString(distance)
 
-	buffer := [2]string{}
-	buffer[0] = fmt.Sprintf("(%d) %s [%s -> %s]", distance, intervalName, p1, p2)
+	result := [1]IntervalResult{
+		{
+			IntervalName: intervalName,
+			Distance:     distance,
+			Note1:        n1,
+			Note2:        n2,
+		},
+	}
+
+	resultBytes, err := json.Marshal(result[0])
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	resultStr := string(resultBytes)
 
 	// Remember the last answer
 	cookie, err := r.Cookie("intervals-session")
 	if err == nil {
-		buffer[1] = cookie.Value
+		// result[1] = cookie.Value
+
+		// TODO
 	}
 	cookie = &http.Cookie{
 		Name:   "intervals-session",
-		Value:  buffer[0],
+		Value:  resultStr,
 		MaxAge: 0,
 	}
 	http.SetCookie(w, cookie)
 
-	templates.ExecuteTemplate(w, "intervalResult", buffer)
+	templates.ExecuteTemplate(w, "intervalResult", result)
 }
 
 // Route interval handler based on request method
@@ -231,7 +222,7 @@ func handleIntervalsValidation(w http.ResponseWriter, r *http.Request) {
 	}
 
 	switch inputType {
-	case "pitch":
+	case "note":
 		handleValidateNote(w, r, id)
 		break
 	case "octave":
@@ -282,45 +273,5 @@ func handleOctaveMode(w http.ResponseWriter, r *http.Request) {
 		renderTemplate(w, "intervalsAdvanced", inputs)
 	} else {
 		renderTemplate(w, "intervalsBasic", inputs[0])
-	}
-}
-
-// Handle note validation requests for the intervals page
-func handleValidateNote(w http.ResponseWriter, r *http.Request, id int) {
-	// Validate the pitch
-	inputName := fmt.Sprintf("pitch%d", id)
-	pitch := strings.Trim(r.FormValue(inputName), " ")
-	_, err := music.Search(pitch)
-	input := &InputField{
-		Id:    id,
-		Value: pitch,
-		Error: "",
-	}
-	if err != nil || len(pitch) > 4 {
-		input.Error = "Invalid pitch"
-		templates.ExecuteTemplate(w, "invalidBasicNoteInput", input)
-	} else {
-		// Passed validation, restore the input
-		templates.ExecuteTemplate(w, "basicNoteInput", input)
-	}
-}
-
-// Handle octave validation requests for the intervals page
-func handleValidateOctave(w http.ResponseWriter, r *http.Request, id int) {
-	inputName := fmt.Sprintf("octave%d", id)
-	inputString := r.FormValue(inputName)
-
-	input := &InputField{
-		Id:    id,
-		Value: inputString,
-		Error: "",
-	}
-	octave, err := strconv.Atoi(inputString)
-	if err != nil || octave < 0 || octave > 2 {
-		input.Error = "Invalid octave"
-		templates.ExecuteTemplate(w, "invalidOctave", input)
-	} else {
-		// Passed validation, restore the input
-		templates.ExecuteTemplate(w, "octaveInput", input)
 	}
 }
