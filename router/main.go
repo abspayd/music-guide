@@ -6,11 +6,11 @@ import (
 
 func HandleRoutes() {
 	http.HandleFunc("/", handleDefault)
-	http.HandleFunc("/home", makeHandlerWithTemplate(handleIndex))
+	http.HandleFunc("/home", makeHandler(handleIndex))
 
-	http.HandleFunc("/intervals", makeHandlerWithTemplate(handleIntervals))
-	http.HandleFunc("/intervals/validation/", makeHandler(handleIntervalsValidation))
-	http.HandleFunc("/intervals/octaveModeToggle", makeHandler(handleOctaveMode))
+	http.HandleFunc("/intervals", makeHandler(handleIntervals))
+	http.HandleFunc("/intervalsValidation/", handleIntervalsValidation)
+	http.HandleFunc("/intervalsOctaveModeToggle", handleOctaveMode)
 
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 }

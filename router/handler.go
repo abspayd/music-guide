@@ -44,7 +44,7 @@ func loadTemplates() *template.Template {
 // Create a handler with URL path validation
 //
 // Renders a template with the same name as the base path
-func makeHandlerWithTemplate(fn func(http.ResponseWriter, *http.Request, string)) http.HandlerFunc {
+func makeHandler(fn func(http.ResponseWriter, *http.Request, string)) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		m, err := validatePath(r.URL.Path)
 		if err != nil {
@@ -52,20 +52,7 @@ func makeHandlerWithTemplate(fn func(http.ResponseWriter, *http.Request, string)
 			return
 		}
 
-		fn(w, r, m[0])
-	}
-}
-
-// Create a basic handler with URL path validation
-func makeHandler(fn func(http.ResponseWriter, *http.Request)) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		_, err := validatePath(r.URL.Path)
-		if err != nil {
-			http.NotFound(w, r)
-			return
-		}
-
-		fn(w, r)
+		fn(w, r, m[1])
 	}
 }
 
@@ -218,12 +205,6 @@ func handleOctaveMode(w http.ResponseWriter, r *http.Request) {
 				Error: "",
 			},
 		},
-	}
-	// Delete history on new page request
-	history, err := r.Cookie("interval-between")
-	if err == nil {
-		history.MaxAge = -1
-		http.SetCookie(w, history)
 	}
 
 	// Render the inputs

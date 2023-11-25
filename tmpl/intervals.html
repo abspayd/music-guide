@@ -9,7 +9,7 @@
 				<span class="mr-1 select-none text-slate-300 text-sm font-medium">Advanced</span>
 
 				<input id="advanced" name="advanced" type="checkbox" class="sr-only peer"
-					hx-POST="/intervals/octaveModeToggle" hx-trigger="change" hx-target="#inputs">
+					hx-POST="/intervalsOctaveModeToggle" hx-trigger="change" hx-target="#inputs">
 
 				<div class="relative bg-slate-600 w-10 h-5 rounded-full peer peer-checked:bg-sky-600 transiation duration-200
 
@@ -91,7 +91,7 @@
 {{ define "basicNoteInput" }}
 <div hx-target="this" hx-swap="outerHTML">
 	<input class="text-gray-800 p-1 rounded-md w-24 text-sm bg-slate-200 shadow-sm" id="note{{ .Id }}" type="text"
-		name="note{{ .Id }}" placeholder="Note {{ .Id }}" hx-post="/intervals/validation/note{{ .Id }}"
+		name="note{{ .Id }}" placeholder="Note {{ .Id }}" hx-post="/intervalsValidation/note{{ .Id }}"
 		hx-trigger="change" hx-sync="closest form:drop" value="{{ .Value }}">
 </div>
 {{ end }}
@@ -99,7 +99,7 @@
 <div hx-target="this" hx-swap="outerHTML">
 	<input class="text-gray-800 p-1 rounded-md w-24 text-sm bg-slate-200 shadow-sm ring-1 ring-red-600"
 		id="note{{ .Id }}" type="text" name="note{{ .Id }}" value="{{ .Value }}" placeholder="Note {{ .Id }}"
-		hx-post="/intervals/validation/note{{ .Id }}" hx-trigger="change" hx-sync="closest form:drop">
+		hx-post="/intervalsValidation/note{{ .Id }}" hx-trigger="change" hx-sync="closest form:drop">
 	<p class="block text-red-600">{{ .Error }}</p>
 </div>
 {{ end }}
@@ -107,7 +107,7 @@
 {{ define "advancedNoteInput" }}
 <div hx-target="this" hx-swap="outerHTML">
 	<input class="text-gray-800 p-1 rounded-l-md w-24 text-sm bg-slate-200 shadow-sm" id="note{{ .Id }}" type="text"
-		name="note{{ .Id }}" placeholder="Note {{ .Id }}" hx-post="/intervals/validation/note{{ .Id }}"
+		name="note{{ .Id }}" placeholder="Note {{ .Id }}" hx-post="/intervalsValidation/note{{ .Id }}"
 		hx-trigger="change" hx-sync="closest form:drop" value="{{ .Value }}">
 </div>
 {{ end }}
@@ -115,7 +115,7 @@
 <div hx-target="this" hx-swap="outerHTML">
 	<input class="text-gray-800 p-1 rounded-l-md w-24 text-sm bg-slate-200 shadow-sm ring-1 ring-red-600"
 		id="note{{ .Id }}" type="text" name="note{{ .Id }}" value="{{ .Value }}" placeholder="Note {{ .Id }}"
-		hx-post="/intervals/validation/note{{ .Id }}" hx-trigger="change" hx-sync="closest form:drop">
+		hx-post="/intervalsValidation/note{{ .Id }}" hx-trigger="change" hx-sync="closest form:drop">
 	<p class="block text-red-600">{{ .Error }}</p>
 </div>
 {{ end }}
@@ -124,7 +124,7 @@
 <div hx-target="this" hx-swap="outerHTML">
 	<input class="p-1 w-10 grow items-center outline-none rounded-r-md text-sm bg-slate-200 shadow-sm"
 		id="octave{{ .Id }}" type="number" name="octave{{ .Id }}" placeholder="0"
-		hx-post="/intervals/validation/octave{{ .Id }}" hx-trigger="change" hx-sync="closest form:drop"
+		hx-post="/intervalsValidation/octave{{ .Id }}" hx-trigger="change" hx-sync="closest form:drop"
 		value="{{ .Value }}">
 </div>
 {{ end }}
@@ -133,7 +133,7 @@
 	<input
 		class="p-1 w-10 grow items-center outline-none rounded-r-md text-sm bg-slate-200 shadow-sm ring-1 ring-red-600"
 		id="octave{{ .Id }}" type="number" name="octave{{ .Id }}" placeholder="0"
-		hx-post="/intervals/validation/octave{{ .Id }}" hx-trigger="change" hx-sync="closest form:drop"
+		hx-post="/intervalsValidation/octave{{ .Id }}" hx-trigger="change" hx-sync="closest form:drop"
 		value="{{ .Value }}">
 	<p class="block text-red-600">{{ .Error }}</p>
 </div>
@@ -144,7 +144,7 @@
 {{ define "noteInput" }}
 <div hx-target="this" hx-swap="outerHTML">
 	<input class="text-gray-800 p-1 rounded-md w-24 text-sm bg-slate-200 shadow-sm" id="note{{ .Id }}" type="text"
-		name="note{{ .Id }}" placeholder="Note {{ .Id }}" hx-post="/intervals/validation/note{{ .Id }}"
+		name="note{{ .Id }}" placeholder="Note {{ .Id }}" hx-post="/intervalsValidation/note{{ .Id }}"
 		hx-trigger="change" hx-sync="closest form:drop" value="{{ .Value }}">
 </div>
 {{ end }}

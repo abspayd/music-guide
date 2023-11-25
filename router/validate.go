@@ -4,48 +4,24 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"slices"
 	"strconv"
 	"strings"
+	"regexp"
 
 	"github.com/abspayd/music-companion/music"
 )
 
 var (
-	// Map of valid URL paths and their valid subpaths
-	pathMap = map[string][]string{
-		"intervals": {
-			"validation",
-			"octaveModeToggle",
-		},
-		"home": {
-			// No subpaths
-		},
-	}
+	// Paths found in the templates folder (./tmpl)
+	validPath = regexp.MustCompile("^/(home|intervals)$")
 )
 
 // Validate the path of a request
 func validatePath(path string) ([]string, error) {
-	m := strings.Split(path, "/")
+	m := validPath.FindStringSubmatch(path)
 	if m == nil {
 		return nil, errors.New("Invalid path")
 	}
-
-	if len(m) > 1 {
-		// remove the first element of m, which is an empty string
-		m = m[1:]
-	}
-
-	// Validate parent path
-	if _, ok := pathMap[m[0]]; !ok {
-		return nil, errors.New("Invalid path")
-	}
-
-	// Validate subpath
-	if len(m) > 1 && slices.Contains(pathMap[m[0]], path) {
-		return nil, errors.New("Invalid path")
-	}
-
 	return m, nil
 }
 
