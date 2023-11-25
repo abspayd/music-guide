@@ -1,7 +1,6 @@
 package router
 
 import (
-	"encoding/json"
 	"html/template"
 	"net/http"
 	"os"
@@ -13,17 +12,6 @@ import (
 )
 
 var (
-	// Map of valid URL paths and their valid subpaths
-	pathMap = map[string][]string{
-		"intervals": {
-			"validation",
-			"octaveModeToggle",
-		},
-		"home": {
-			// No subpaths
-		},
-	}
-
 	templates = loadTemplates()
 )
 
@@ -123,13 +111,6 @@ func handleGetIntervals(w http.ResponseWriter, r *http.Request, tmpl string) {
 		},
 	}
 
-	// Delete history on new page request
-	// history, err := r.Cookie("intervals-session")
-	// if err == nil {
-	// 	history.MaxAge = -1
-	// 	http.SetCookie(w, history)
-	// }
-
 	renderTemplate(w, tmpl+".html", inputs)
 }
 
@@ -153,7 +134,7 @@ func handlePostIntervals(w http.ResponseWriter, r *http.Request) {
 	pitch1 := music.Pitch{Note: idx1, Octave: octave1}
 	pitch2 := music.Pitch{Note: idx2, Octave: octave2}
 
-	if pitch1.Note > pitch2.Note {
+	if octave1 == octave2 && pitch1.Note > pitch2.Note {
 		// Make the first pitch always treated
 		// as an octave below the second
 		pitch2.Octave++
@@ -162,36 +143,13 @@ func handlePostIntervals(w http.ResponseWriter, r *http.Request) {
 	distance := pitch1.GetInterval(pitch2)
 	intervalName := music.IntervalToString(distance)
 
-	result := [1]IntervalResult{
-		{
-			IntervalName: intervalName,
-			Distance:     distance,
-			Note1:        n1,
-			Note2:        n2,
-		},
+	result := IntervalResult{
+		// Current result
+		IntervalName: intervalName,
+		Distance:     distance,
+		Note1:        n1,
+		Note2:        n2,
 	}
-
-	resultBytes, err := json.Marshal(result[0])
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	resultStr := string(resultBytes)
-
-	// Remember the last answer
-	cookie, err := r.Cookie("intervals-session")
-	if err == nil {
-		// result[1] = cookie.Value
-
-		// TODO
-	}
-	cookie = &http.Cookie{
-		Name:   "intervals-session",
-		Value:  resultStr,
-		MaxAge: 0,
-	}
-	http.SetCookie(w, cookie)
 
 	templates.ExecuteTemplate(w, "intervalResult", result)
 }
@@ -262,7 +220,7 @@ func handleOctaveMode(w http.ResponseWriter, r *http.Request) {
 		},
 	}
 	// Delete history on new page request
-	history, err := r.Cookie("intervals-session")
+	history, err := r.Cookie("interval-between")
 	if err == nil {
 		history.MaxAge = -1
 		http.SetCookie(w, history)
