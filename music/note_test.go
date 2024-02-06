@@ -18,7 +18,7 @@ func TestSearch(t *testing.T) {
 		"b":   11,
 		"c ":  0,
 		" c":  0,
-		" c ":  0,
+		" c ": 0,
 	}
 	for note, expected := range test {
 		res, _ := Search(note)
@@ -52,6 +52,25 @@ func TestGetInterval(t *testing.T) {
 			if interval != int(math.Abs(float64(i-j))) {
 				t.Errorf("(Note%+v).GetInterval(Note%+v) = %d; expected %d", n1, n2, interval, i)
 			}
+		}
+	}
+}
+
+func TestGetPitchAtInterval(t *testing.T) {
+	basePitch := Pitch{
+		Note:   0,
+		Octave: 0,
+	}
+
+	for i := 0; i <= 12; i++ {
+		pitchAtInterval := basePitch.GetPitchAtInterval(i)
+
+		if pitchAtInterval.Note != i % 12 {
+			t.Errorf("(note%+v).GetPitchAtInterval(%d).Note = %d; expected %d", basePitch, i, pitchAtInterval.Note, i)
+		}
+
+		if pitchAtInterval.Octave != 0 && i < 11 || pitchAtInterval.Octave != 1 && i == 12 {
+			t.Errorf("(note%+v).GetPitchAtInterval(%d).Note = %d; expected %d", basePitch, i, pitchAtInterval.Note, i)
 		}
 	}
 }

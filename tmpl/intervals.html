@@ -22,7 +22,7 @@
 		<div class="container w-fit mx-auto">
 			<h1 class="h-10 text-slate-100 text-lg pl-6 pt-6">Interval Between Notes</h1>
 			<form class="p-6" hx-post="/intervals" hx-swap="innerHTML" hx-target="#results">
-				<div id="inputs" class="flex space-x-3 mb-3">
+				<div id="intervalBetweenInputs" class="flex space-x-3 mb-3">
 					{{ template "intervalsBasic" . }}
 				</div>
 
@@ -37,8 +37,9 @@
 		{{ define "intervalResult" }}
 		<div class="h-12 pl-6 mb-3 rounded-lg shadow-xl bg-slate-300 text-gray-800 justify-items-center w-full">
 			<div class="flex h-full w-fit">
-				<div class="pl-12 my-auto font-bold">({{ .Distance }}) {{ .IntervalName }} {{ .Note1 }} <i
-						class="fa-solid fa-arrow-right"></i> {{ .Note2 }}</div>
+				<div class="pl-12 my-auto font-bold">({{ .Distance }}) {{ .IntervalName }} {{ .Note1 }}
+					<i class="fa-solid fa-arrow-right"></i> {{ .Note2 }}
+				</div>
 			</div>
 		</div>
 		{{ end }}
@@ -46,15 +47,20 @@
 
 </div>
 
-<!-- <div class="container w-1/2 mx-auto">
+<div class="container w-1/2 mx-auto">
 
 	<div class="my-3 bg-slate-700 shadow-xl rounded-lg">
 
 		<div class="container w-fit mx-auto">
 			<h1 class="h-10 text-slate-100 text-lg pl-6 pt-6">Note from interval</h1>
 			<form class="p-6" hx-post="/intervals" hx-swap="innerHTML" hx-target="#results">
-				<div id="inputs" class="flex space-x-3 mb-3">
-					{{/* template "basicNoteInput" index . 0 */}}
+				<div hx-target="this" hx-swap="innerHTML" class="flex space-x-3 mb-3">
+					<input class="text-gray-800 p-1 rounded-md w-24 text-sm bg-slate-200 shadow-sm"
+						id="noteAtIntervalBase" type="text" name="noteAtIntervalBase" placeholder="Note"
+						hx-post="/intervalsValidation/note" hx-trigger="change" hx-sync="closest form:drop" value="">
+
+					<input type="number" id="noteAtIntervalDistance" name="noteAtIntervalDistance"
+						class="text-gray-800 p-1 w-8 rounded-md text-sm bg-slate-200 shadow-sm">
 				</div>
 
 				<button class="btn-primary" type="submit">
@@ -66,11 +72,10 @@
 
 	<div id="results"></div>
 
-</div>-->
+</div>
 
 {{ template "footer" }}
 
-<!-- === Interval Betweeen Notes === -->
 {{ define "intervalsBasic" }}
 {{ template "basicNoteInput" index . 0 }}
 {{ template "basicNoteInput" index . 1 }}
@@ -81,7 +86,6 @@
 	{{ template "advancedNoteInput" index . 0 0 }}
 	{{ template "octaveInput" index . 1 0 }}
 </div>
-
 <div class="flex">
 	{{ template "advancedNoteInput" index . 0 1 }}
 	{{ template "octaveInput" index . 1 1 }}
@@ -138,9 +142,7 @@
 	<p class="block text-red-600">{{ .Error }}</p>
 </div>
 {{ end }}
-<!-- =========================== -->
 
-<!-- === Interval from Note === -->
 {{ define "noteInput" }}
 <div hx-target="this" hx-swap="outerHTML">
 	<input class="text-gray-800 p-1 rounded-md w-24 text-sm bg-slate-200 shadow-sm" id="note{{ .Id }}" type="text"
@@ -148,6 +150,5 @@
 		hx-trigger="change" hx-sync="closest form:drop" value="{{ .Value }}">
 </div>
 {{ end }}
-<!-- =========================== -->
 
 <script src="/static/js/intervals.js"></script>
