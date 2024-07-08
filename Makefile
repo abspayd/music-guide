@@ -23,7 +23,7 @@ docker-run:
 	docker run -p ${PORT}:${PORT} -ti --rm --name ${IMAGE_NAME} ${USER}/${IMAGE_NAME}:${VERSION}
 
 docker-clean:
-	docker rm ${IMAGE_NAME}
+	docker rm ${USER}/${IMAGE_NAME}
 
 docker-buildx:
 	docker buildx create --driver=docker-container \
@@ -48,7 +48,7 @@ help:
 	@echo " - test 		run go tests"
 	@echo " - docker-build 	build docker image"
 	@echo " - docker-run 		run docker image"
-	@echo " - docker-clean 	clean docker images"
+	@echo " - docker-clean 	clean docker container"
 	@echo " - docker-buildx	build and push docker images (multi-platform)"
 	@echo " - deploy 		deploy to server host"
 	@echo " - clean		remove binary"
