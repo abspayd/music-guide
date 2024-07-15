@@ -1,7 +1,7 @@
 PROJECT_PATH=.
 EXE=bin/music
 USER=abspayd
-IMAGE_NAME=music-companion
+IMAGE_NAME=music-guide
 VERSION=latest
 PORT=3000
 
@@ -32,7 +32,7 @@ docker-buildx:
 	docker buildx rm
 
 deploy:
-	doctl compute ssh music-companion --ssh-command \
+	doctl compute ssh music-guide --ssh-command \
 		"docker pull ${USER}/${IMAGE_NAME}:${VERSION} && \
 		docker stop ${IMAGE_NAME}; \
 		docker run -itd -p ${PORT}:${PORT} --rm --name ${IMAGE_NAME} ${USER}/${IMAGE_NAME}:${VERSION}"
