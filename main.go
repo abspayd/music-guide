@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/abspayd/music-companion/router"
+	"github.com/abspayd/music-guide/router"
 )
 
 func main() {

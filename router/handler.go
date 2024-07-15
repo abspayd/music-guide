@@ -9,7 +9,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/abspayd/music-companion/music"
+	"github.com/abspayd/music-guide/music"
 )
 
 var (
