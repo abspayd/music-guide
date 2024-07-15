@@ -13,7 +13,7 @@ import (
 )
 
 var (
-	validPath = regexp.MustCompile("^/(home|intervals)$")
+	validPath = regexp.MustCompile("^/(home|intervals|circle-quiz)$")
 	templates = loadTemplates()
 )
 
@@ -149,6 +149,10 @@ func handleIntervals(w http.ResponseWriter, r *http.Request, tmpl string) {
 	} else if r.Method == http.MethodPost {
 		handlePostIntervals(w, r)
 	}
+}
+
+func handleCircleOfFifthsQuiz(w http.ResponseWriter, r *http.Request, tmpl string) {
+	renderTemplate(w, tmpl+".html", nil)
 }
 
 func handleIntervalsValidation(w http.ResponseWriter, r *http.Request) {

@@ -8,6 +8,7 @@ func HandleRoutes() {
 	http.HandleFunc("/", handleDefault)
 	http.HandleFunc("/home", makeHandler(handleIndex))
 	http.HandleFunc("/intervals", makeHandler(handleIntervals))
+	http.HandleFunc("/circle-quiz", makeHandler(handleCircleOfFifthsQuiz))
 
 	http.HandleFunc("/intervalsValidation/", handleIntervalsValidation)
 	http.HandleFunc("/intervalsOctaveModeToggle", handleOctaveMode)
