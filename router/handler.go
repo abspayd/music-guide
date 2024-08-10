@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/abspayd/music-guide/music"
+	"github.com/labstack/echo/v4"
 )
 
 var (
@@ -49,24 +50,23 @@ func makeHandler(fn func(http.ResponseWriter, *http.Request, string)) http.Handl
 	}
 }
 
-func renderTemplate(w http.ResponseWriter, tmpl string, data any) {
-	err := templates.ExecuteTemplate(w, tmpl, data)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
+func handleMain(c echo.Context) error {
+	// c.HTML(200, "<h1>test</h1>")
+	return c.Render(http.StatusOK, "index.html", map[string]interface{}{})
+	// return c.String(http.StatusOK, "Home page")
 }
 
-func handleDefault(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path == "/" {
-		// Redirect "/" to "/home"
-		http.Redirect(w, r, "/home", http.StatusFound)
-	} else {
-		// This url was not matched by any handlers
-		http.NotFound(w, r)
-		return
-	}
-}
+// -- deprecated --
+// func handleDefault(w http.ResponseWriter, r *http.Request) {
+// 	if r.URL.Path == "/" {
+// 		// Redirect "/" to "/home"
+// 		http.Redirect(w, r, "/home", http.StatusFound)
+// 	} else {
+// 		// This url was not matched by any handlers
+// 		http.NotFound(w, r)
+// 		return
+// 	}
+// }
 
 func handleIndex(w http.ResponseWriter, r *http.Request, tmpl string) {
 	renderTemplate(w, tmpl+".html", nil)
