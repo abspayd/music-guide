@@ -1,6 +1,11 @@
-FROM golang:1.22
-WORKDIR /app
+FROM golang:1.22-alpine
+
+WORKDIR /usr/src/app
+
+COPY go.mod ./
+RUN go mod download && go mod verify
+
 COPY . .
-EXPOSE 3000
-RUN go build -o bin/music .
-CMD ./bin/music
+RUN go build -v -o /usr/local/bin/app ./...
+
+CMD ["app"]

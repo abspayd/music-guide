@@ -1,54 +1,6 @@
-PROJECT_PATH=.
-EXE=bin/music
-USER=abspayd
-IMAGE_NAME=music-guide
-VERSION=latest
-PORT=3000
+BINARY=app
 
-default: help
+all: build
 
-build:
-	go build -o ${EXE} ${PROJECT_PATH}
-
-run: build
-	${EXE}
-
-test:
-	go test ./...
-
-docker-build:
-	docker build --tag ${USER}/${IMAGE_NAME}:${VERSION} .
-
-docker-run:
-	docker run -p ${PORT}:${PORT} -ti --rm --name ${IMAGE_NAME} ${USER}/${IMAGE_NAME}:${VERSION}
-
-docker-clean:
-	docker rm ${USER}/${IMAGE_NAME}
-
-docker-buildx:
-	docker buildx create --driver=docker-container \
-		--name=builder --bootstrap --use
-	docker buildx build --platform linux/amd64,linux/arm64 --tag ${USER}/${IMAGE_NAME}:${VERSION} --push .
-	docker buildx rm
-
-deploy:
-	doctl compute ssh music-guide --ssh-command \
-		"docker pull ${USER}/${IMAGE_NAME}:${VERSION} && \
-		docker stop ${IMAGE_NAME}; \
-		docker run -itd -p ${PORT}:${PORT} --rm --name ${IMAGE_NAME} ${USER}/${IMAGE_NAME}:${VERSION}"
-
-clean:
-	rm ${EXE}
-
-help:
-	@echo "    Make options"
-	@echo "===================="
-	@echo " - build 		build the go binary ${EXE}"
-	@echo " - run 			execute the project binary"
-	@echo " - test 		run go tests"
-	@echo " - docker-build 	build docker image"
-	@echo " - docker-run 		run docker image"
-	@echo " - docker-clean 	clean docker container"
-	@echo " - docker-buildx	build and push docker images (multi-platform)"
-	@echo " - deploy 		deploy to server host"
-	@echo " - clean		remove binary"
+build: 
+	@echo "TODO"

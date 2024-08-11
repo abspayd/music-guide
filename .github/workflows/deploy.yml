@@ -5,9 +5,9 @@ on:
     branches: [ "main" ]
 
 env:
-  DROPLET_NAME: music-companion
-  IMAGE: abspayd/music-companion
-  CONTAINER_NAME: music-companion
+  DROPLET_NAME: music-guide
+  IMAGE: abspayd/music-guide
+  CONTAINER_NAME: music-guide
   VERSION: latest
   PORT: 3000
 
