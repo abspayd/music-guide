@@ -11,5 +11,5 @@ func SetupRoutes(e *echo.Echo) {
 	// Main route
 	e.GET("/", handlers.HandleMain)
 
-	// TODO: make other routes
+	e.GET("/intervals", handlers.HandleIntervalCalculator)
 }

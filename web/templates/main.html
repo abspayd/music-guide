@@ -1,24 +1,7 @@
-{{define "header"}}
-<!DOCTYPE html>
-<html lang="en">
+{{template "header"}}
 
-<head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta name="description" content="A music theory learning tool">
+{{template "sidebar"}}
 
-	<title>Music Guide</title>
+{{.}}
 
-</head>
-
-<body>
-{{end}}
-
-	<h1>Home</h1>
-	<p>This is the start of a project-wide rework.</p>
-
-{{define "footer"}}
-</body>
-
-</html>
-{{end}}
+{{template "footer"}}
