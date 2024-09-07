@@ -70,24 +70,23 @@ var (
 	}
 )
 
-type Pitch struct {
+type pitch struct {
 	Class  string // A note's name. E.g.: C, C#, Cb, etc.
 	Octave int    // A note's octave register
 }
 
-func (p Pitch) validatePitch() bool {
+func (p pitch) validatePitch() bool {
 	if len(p.Class) == 0 {
 		return false
 	}
-	r := regexp.MustCompile(`^[A-G][b#]$`)
+
+	r := regexp.MustCompile(`^[A-G][b#]{0,2}$`)
 	if !r.MatchString(p.Class) {
 		return false
 	}
-
 	if p.Octave < -2 || p.Octave > 8 {
 		return false
 	}
-
 	return true
 }
 
@@ -103,11 +102,11 @@ func pitchName(pitch_index int, sharp bool) (string, error) {
 	return flat_notes[pitch_index%12], nil
 }
 
-func parsePitch(text string) (pitch Pitch, err error) {
+func parsePitch(text string) (p pitch, err error) {
 	r := regexp.MustCompile(`(?i)^(?P<class>[a-g])(?P<accidental>[b#]{0,2})(?P<octave>-?[0-9]+)?$`)
 
 	if !r.MatchString(text) {
-		return pitch, fmt.Errorf("Invalid pitch: \"%s\"", text)
+		return p, fmt.Errorf("Invalid pitch string: \"%s\"", text)
 	}
 
 	group_matches := r.FindStringSubmatch(text)
@@ -116,24 +115,31 @@ func parsePitch(text string) (pitch Pitch, err error) {
 		group_name := group_names[idx]
 		switch group_name {
 		case "class":
+			p.Class += strings.ToUpper(match)
+			break
 		case "accidental":
-			pitch.Class += match
+			p.Class += strings.ToLower(match)
 			break
 		case "octave":
+			if len(match) == 0 {
+				break
+			}
 			octave, err := strconv.ParseInt(match, 10, 32)
-			pitch.Octave = int(octave)
+			p.Octave = int(octave)
 			if err != nil {
-				return pitch, err
+				return p, err
 			}
 			break
 		default:
 			break
 		}
 	}
-	if !pitch.validatePitch() {
-		return pitch, fmt.Errorf("Pitch is not valid")
+
+	// Make sure the pitch struct we made is valid
+	if !p.validatePitch() {
+		return p, fmt.Errorf("Pitch is not valid: \"%v\"", p)
 	}
-	return pitch, err
+	return p, err
 }
 
 // Gets the index value for a pitch string.

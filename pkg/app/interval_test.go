@@ -36,7 +36,7 @@ func TestInterval(t *testing.T) {
 		t.Error(err)
 	}
 	_, err = parsePitch("c10")
-	if err != nil {
+	if err == nil {
 		t.Error(err)
 	}
 	_, err = parsePitch("a")
@@ -44,14 +44,13 @@ func TestInterval(t *testing.T) {
 		t.Error(err)
 	}
 	_, err = parsePitch("-")
-	if err != nil {
+	if err == nil {
 		t.Error(err)
 	}
 	_, err = parsePitch("a-")
-	if err != nil {
+	if err == nil {
 		t.Error(err)
 	}
-	t.Fail()
 }
 
 func TestPitchIndex(t *testing.T) {
