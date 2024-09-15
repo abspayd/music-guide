@@ -65,28 +65,28 @@ func TestNewPitch(t *testing.T) {
 	}
 
 	// Test indices for pitch values
-	sharps := map[string]int{
-		"C": 0, "C#": 1, "D": 2, "D#": 3, "E": 4, "F": 5, "F#": 6, "G": 7, "G#": 8, "A": 9, "A#": 10, "B": 11,
+	sharps := []string{
+		"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B",
 	}
-	for k, v := range sharps {
-		p, err := NewPitch(k)
+	for i, note := range sharps {
+		p, err := NewPitch(note)
 		if err != nil {
 			t.Error(err)
 		}
-		if p.index != v {
-			t.Errorf("Incorrect index %d for \"%s\", expected %d", p.index, k, v)
+		if p.index != i {
+			t.Errorf("Incorrect index %d for \"%s\", expected %d", p.index, note, i)
 		}
 	}
-	flats := map[string]int{
-		"C": 0, "Db": 1, "D": 2, "Eb": 3, "E": 4, "F": 5, "Gb": 6, "G": 7, "Ab": 8, "A": 9, "Bb": 10, "B": 11,
+	flats := []string{
+		"C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B",
 	}
-	for k, v := range flats {
-		p, err := NewPitch(k)
+	for i, note := range flats {
+		p, err := NewPitch(note)
 		if err != nil {
 			t.Error(err)
 		}
-		if p.index != v {
-			t.Errorf("Incorrect index %d for \"%s\", expected %d", p.index, k, v)
+		if p.index != i {
+			t.Errorf("Incorrect index %d for \"%s\", expected %d", p.index, note, i)
 		}
 	}
 }
