@@ -9,7 +9,8 @@ import (
 func SetupRoutes(e *echo.Echo) {
 
 	// Main route
-	e.GET("/", handlers.HandleMain)
+	e.GET("/", handlers.GetMain)
 
-	e.GET("/intervals", handlers.HandleIntervalCalculator)
+	e.GET("/intervals", handlers.GetIntervalCalculator)
+	e.POST("/intervals", handlers.PostIntervalCalculator)
 }

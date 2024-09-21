@@ -2,7 +2,7 @@ BINARY := app
 BUILD_PATH := bin
 SRC_DIR := ./cmd/server
 
-.PHONY: all build run clean test watch
+.PHONY: all build run clean test watch docker-build docker-run docker-push docker-pull
 
 all: build
 

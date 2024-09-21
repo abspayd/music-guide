@@ -1,0 +1,22 @@
+{{template "header"}}
+
+<div class="px-4 w-full mx-auto">
+	<form method="POST" action="/intervals">
+		<div class="block p-4 space-y-2 rounded mx-auto w-fit">
+			<span>
+				<label for="note1">Note 1</label>
+				<input name="note1" type="text" class="text-input" />
+			</span>
+			<span>
+				<label for="note2">Note 2</label>
+				<input name="note2" type="text" class="text-input" />
+			</span>
+
+			<button class="text-white bg-cyan-600 hover:bg-cyan-700 text-sm font-bold rounded-md py-1 px-3" type="submit">Submit</button>
+		<div>
+	</form>
+</div>
+
+{{.}}
+
+{{template "footer"}}

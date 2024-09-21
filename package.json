@@ -4,6 +4,7 @@
 		"tailwind:build:watch": "npx tailwindcss -i ./web/static/css/input.css -o ./web/static/css/output.css --watch"
 	},
 	"devDependencies": {
+		"@tailwindcss/forms": "^0.5.9",
 		"tailwindcss": "^3.4.10"
 	}
 }
