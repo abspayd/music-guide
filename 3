@@ -1,18 +1,22 @@
 package handlers
 
 import (
-	"net/http"
 
 	"github.com/abspayd/music-guide/pkg/app"
+	"github.com/abspayd/music-guide/views/intervals"
+
 	"github.com/labstack/echo/v4"
 )
 
-func GetMain(c echo.Context) error {
-	return c.Render(http.StatusOK, "main.html", nil)
-}
-
 func GetIntervalCalculator(c echo.Context) error {
-	return c.Render(http.StatusOK, "intervals.html", nil)
+	// Read cookies here, not on every POST
+	history := []string{}
+	// cookie, err := c.Cookie("interval_history")
+	// if err != nil {
+	// 	log.Println(err)
+	// }
+
+	return Render(c.Response().Writer, c, intervals.Intervals(history))
 }
 
 func PostIntervalCalculator(c echo.Context) error {
@@ -22,5 +26,6 @@ func PostIntervalCalculator(c echo.Context) error {
 	if err != nil {
 		c.Error(err)
 	}
-	return c.Render(http.StatusOK, "intervals.html", interval)
+
+	return Render(c.Response().Writer, c, intervals.IntervalEntry(interval))
 }
