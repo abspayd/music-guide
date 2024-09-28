@@ -1,6 +1,6 @@
 module github.com/abspayd/music-guide
 
-go 1.22.6
+go 1.23.1
 
 require (
 	github.com/a-h/templ v0.2.778

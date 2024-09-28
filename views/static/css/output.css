@@ -930,6 +930,11 @@ select {
   background-color: rgb(14 116 144 / var(--tw-bg-opacity));
 }
 
+.bg-green-700 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(21 128 61 / var(--tw-bg-opacity));
+}
+
 .p-0 {
   padding: 0px;
 }
