@@ -21,7 +21,7 @@ jobs:
         uses: docker/login-action@v3
         with:
           username: ${{ vars.DOCKERHUB_USERNAME }}
-          password: ${{ vars.DOCKERHUB_TOKEN }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build and push
         uses: docker/build-push-action@v6
@@ -36,7 +36,7 @@ jobs:
   #    - name: Login to DigitalOcean 
   #      uses: digitalocean/action-doctl@v2.5.1
   #      with:
-  #      token: ${{ vars.DIGITALOCEAN_TOKEN }}
+  #      token: ${{ secrets.DIGITALOCEAN_TOKEN }}
 
       # - name: Pull and run Docker image
       #   run: doctl compute 
