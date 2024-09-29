@@ -9,6 +9,8 @@ on:
 env:
   IMAGE_NAME: ${{ github.repository }}
   IMAGE_TAG: latest
+  CONTAINER_NAME: ${{ github.repository }}-app
+  PORT: 3000
 
 jobs:
   build:
@@ -30,13 +32,17 @@ jobs:
           push: true
           tags: ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
 
-  #deploy:
-  #  runs-on: ubuntu-latest
-  #  steps:
-  #    - name: Login to DigitalOcean 
-  #      uses: digitalocean/action-doctl@v2.5.1
-  #      with:
-  #      token: ${{ secrets.DIGITALOCEAN_TOKEN }}
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Login to DigitalOcean 
+        uses: digitalocean/action-doctl@v2.5.1
+        with:
+        token: ${{ secrets.DIGITALOCEAN_TOKEN }}
 
-      # - name: Pull and run Docker image
-      #   run: doctl compute 
+      - name: Pull and run Docker image
+        run: |
+          doctl compute ssh music-guide --ssh-command \
+            "docker pull ${{ vars.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} &&
+          docker run -d -it --rm -p ${{ env.PORT }}:${{ env.PORT }} --name ${{ env.CONTAINER_NAME }} \
+            ${{ vars.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}"
