@@ -1,5 +1,9 @@
 /bin/*
+/tmp
+
+.env
+
 /node_modules
 package-lock.json
-/tmp
+
 /views/static/css/output.css
