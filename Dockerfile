@@ -13,10 +13,10 @@ RUN apk update && \
 RUN go install github.com/a-h/templ/cmd/templ@latest
 RUN go mod download && go mod verify
 
-ENV CGO_ENABLED=0
-
 # Production builder Stage
 FROM base AS builder
+
+ENV CGO_ENABLED=0
 
 RUN npm run tailwind:build
 RUN templ generate
@@ -28,10 +28,15 @@ FROM base AS dev
 RUN go install github.com/air-verse/air@latest
 
 CMD ["air"]
-
+ 
 # Production stage (use binary on fresh alpine install)
 FROM alpine:latest AS prod
+
+WORKDIR /web
+
 COPY --from=builder /usr/local/bin/app .
+COPY --from=builder /usr/src/app/views/static views/static
+
 EXPOSE 3000
 
 CMD ["./app"]
