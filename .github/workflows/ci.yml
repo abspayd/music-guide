@@ -38,7 +38,7 @@ jobs:
       - name: Login to DigitalOcean 
         uses: digitalocean/action-doctl@v2.5.1
         with:
-        token: ${{ secrets.DIGITALOCEAN_TOKEN }}
+          token: ${{ secrets.DIGITALOCEAN_TOKEN }}
 
       - name: Pull and run Docker image
         run: |
