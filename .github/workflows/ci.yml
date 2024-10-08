@@ -47,17 +47,17 @@ jobs:
           push: true
           tags: ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
 
-    deploy:
-      runs-on: ubuntu-latest
-      needs: build
-      steps:
-        - name: Login to DigitalOcean
-          uses: digitalocean/action-doctl@2.5.1
-          with:
-            token: ${{ secrets.DIGITALOCEAN_TOKEN }}
+  # deploy:
+  #   runs-on: ubuntu-latest
+  #   needs: build
+  #   steps:
+  #     - name: Login to DigitalOcean
+  #       uses: digitalocean/action-doctl@2.5.1
+  #       with:
+  #         token: ${{ secrets.DIGITALOCEAN_TOKEN }}
 
-        - name: Login DigitalOcean to Docker
-          run: doctl
+  #     - name: Login DigitalOcean to Docker
+  #       run: doctl
 
   # deploy:
   #   runs-on: ubuntu-latest
