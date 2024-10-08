@@ -1,9 +1,13 @@
+# Build
 BINARY := app
 BUILD_PATH := bin
 SRC_DIR := ./cmd/server
+PORT := 8080
+
+# Docker
 IMAGE_NAME := abspayd/music-guide
-STAGE := dev
 IMAGE_TAG := latest-dev
+STAGE := dev
 CONTAINER_NAME := music-guide-$(STAGE)
 
 .PHONY: all
@@ -43,15 +47,15 @@ docker-build:
 .PHONY: docker-run
 docker-run:
 	@echo "Running docker container..."
-	docker run -it --rm -p 3000:3000 --name $(CONTAINER_NAME) $(IMAGE_NAME):$(IMAGE_TAG)
+	docker run -it --rm --env-file ./.env -p $(PORT):$(PORT) --name $(CONTAINER_NAME) $(IMAGE_NAME):$(IMAGE_TAG)
 
 .PHONY: docker-watch
 docker-watch:
 	@echo "Running watchful docker container..."
-	docker run -it --rm -p 3000:3000 -v $(shell pwd):/usr/src/app --name $(CONTAINER_NAME) $(IMAGE_NAME):$(IMAGE_TAG)
+	docker run -it --rm --env-file ./.env -p $(PORT):$(PORT) -v $(shell pwd):/usr/src/app --name $(CONTAINER_NAME) $(IMAGE_NAME):$(IMAGE_TAG)
 
-.PHONY: deploy
-deploy:
+.PHONY: docker-push
+docker-push:
 	@echo "Starting deploy..."
 	@echo "Building multi-platform docker image..."
 	docker buildx create \

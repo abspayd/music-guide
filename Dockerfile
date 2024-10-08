@@ -37,6 +37,4 @@ WORKDIR /web
 COPY --from=builder /usr/local/bin/app .
 COPY --from=builder /usr/src/app/views/static views/static
 
-EXPOSE 3000
-
 CMD ["./app"]
