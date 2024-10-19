@@ -1,8 +1,11 @@
 # Build
 BINARY := app
 BUILD_PATH := bin
+CSS_PATH := ./views/static/css
+TEMPLATE_PATH := ./views/1
+
 SRC_DIR := ./cmd/server
-PORT := 8080
+PORT := 3000
 
 # Docker
 IMAGE_NAME := abspayd/music-guide
@@ -14,10 +17,22 @@ CONTAINER_NAME := music-guide-$(STAGE)
 all: build
 
 .PHONY: build
-build: $(BUILD_PATH)/$(BINARY) 
-$(BUILD_PATH)/$(BINARY):
+build: $(BUILD_PATH)/$(BINARY)
+$(BUILD_PATH)/$(BINARY): css templ
 	@echo "Building the server..."
 	go build -o $(BUILD_PATH)/$(BINARY) -v $(SRC_DIR)
+
+.PHONY: css
+css: $(CSS_PATH)/%.css
+$(CSS_PATH)/%.css:
+	@echo "Generating CSS..."
+	npm run tailwind:build
+
+TEMPLATES := $(shell find . -name '*.templ')
+.PHONY: templ
+templ: $(TEMPLATES)
+$(TEMPLATES):
+	templ generate
 
 .PHONY: watch
 watch:
