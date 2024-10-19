@@ -9,6 +9,7 @@ The application can be built from scratch or with Docker.
 #### Prerequisites
 go 1.23 or higher: \
 https://go.dev/doc/install
+
 templ:
 ```bash
 go install github.com/a-h/templ/cmd/templ@latest
