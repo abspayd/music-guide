@@ -41,7 +41,7 @@ Start the website:
 make run
 ```
 #### Clean
-Remove the compiled binaries with:
+Remove the compiled binaries:
 ```bash
 make clean
 ```
