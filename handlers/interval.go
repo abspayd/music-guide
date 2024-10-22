@@ -37,7 +37,7 @@ func ValidateNote(c echo.Context) error {
 	header := c.Request().Header
 	_, ok := header["Hx-Request"]
 	if !ok {
-		log.Fatalln("Non-HTMX validation recieved. Not sure how this can happen.")
+		log.Println("Non-HTMX validation recieved. Not sure how this can happen.")
 		return nil
 	}
 
