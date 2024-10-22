@@ -13,6 +13,7 @@ func SetupRoutes(e *echo.Echo) {
 	// Intervals
 	e.GET("/intervals", handlers.GetIntervalCalculator)
 	e.POST("/intervals", handlers.PostIntervalCalculator)
+	e.POST("/intervals/validate-note", handlers.ValidateNote)
 
 	// Circle of fifths
 	e.GET("/circle", handlers.GetCircleOfFifths)

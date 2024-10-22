@@ -17,22 +17,11 @@ CONTAINER_NAME := music-guide-$(STAGE)
 all: build
 
 .PHONY: build
-build: $(BUILD_PATH)/$(BINARY)
-$(BUILD_PATH)/$(BINARY): css templ
+build:
 	@echo "Building the server..."
-	go build -o $(BUILD_PATH)/$(BINARY) -v $(SRC_DIR)
-
-.PHONY: css
-css: $(CSS_PATH)/%.css
-$(CSS_PATH)/%.css:
-	@echo "Generating CSS..."
 	npm run tailwind:build
-
-TEMPLATES := $(shell find . -name '*.templ')
-.PHONY: templ
-templ: $(TEMPLATES)
-$(TEMPLATES):
 	templ generate
+	go build -o $(BUILD_PATH)/$(BINARY) -v $(SRC_DIR)
 
 .PHONY: watch
 watch:
@@ -40,7 +29,7 @@ watch:
 	air
 
 .PHONY: run
-run: build
+run:
 	@echo "Running the server..."
 	./$(BUILD_PATH)/$(BINARY)
 
