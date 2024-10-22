@@ -14,13 +14,15 @@ templ TextInput(label, name, value string) {
 			class="block py-1 rounded-md shadow-sm focus:ring-1 focus:border-gray-300 border-gray-300"
 			placeholder="c#0"
 			hx-post="/intervals/validate-note"
+			hx-trigger="change submit"
+			hx-sync="closest form:drop"
 		/>
 	</div>
 }
 
 templ TextInputInvalid(label, name, value, error_message string) {
 	<div hx-target="this" hx-swap="outerHTML">
-		<label for={ name } class="block text-sm font-medium leading-6 text-gray-900">{ label }</label>
+		<label for={ name } class="block text-sm font-medium leading-6 text-red-500">{ label }</label>
 		<input
 			id={ name }
 			name={ name }
@@ -30,6 +32,8 @@ templ TextInputInvalid(label, name, value, error_message string) {
 			class="block rounded-md py-1 focus:ring-1 border-red-400 focus:border-red-400 focus:ring-red-500"
 			placeholder="c#0"
 			hx-post="/intervals/validate-note"
+			hx-trigger="change submit"
+			hx-sync="closest form:drop"
 		/>
 		<p class="text-xs font-normal text-red-500">
 			{ error_message }

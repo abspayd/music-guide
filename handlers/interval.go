@@ -18,11 +18,16 @@ func PostIntervalCalculator(c echo.Context) error {
 	note1 := c.Request().PostFormValue("note1")
 	note2 := c.Request().PostFormValue("note2")
 	interval, err := app.IntervalName(note1, note2)
+
 	if err != nil {
-		// @TODO: replace bad notes with error inputs?
-		// Or is that redundant here?
-		c.Error(err)
+		// One or both of the inputs are invalid so just leave without swapping
+		c.Response().Header().Set("HX-Reswap", "none")
+		return nil
 	}
+
+	// TODO: just a start to better output (I want it to show the inputs that lead to the answer)
+	// output := fmt.Sprintf("%s -> %s = %s", note1, note2, interval)
+	// return Render(c.Response().Writer, c, intervals.IntervalEntry(output))
 
 	return Render(c.Response().Writer, c, intervals.IntervalEntry(interval))
 }
@@ -54,6 +59,6 @@ func ValidateNote(c echo.Context) error {
 	} else {
 		error_msg = "Invalid pitch"
 	}
-	
+
 	return Render(c.Response().Writer, c, components.TextInputInvalid(label, id, value, error_msg))
 }

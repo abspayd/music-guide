@@ -50,11 +50,11 @@ func Intervals(history []string) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = components.TextInput("Note 1", "note1", "note1").Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = components.TextInput("Note 1", "note1", "").Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = components.TextInput("Note 2", "note2", "note2").Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = components.TextInput("Note 2", "note2", "").Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -147,7 +147,7 @@ func IntervalEntry(interval string) templ.Component {
 			var templ_7745c5c3_Var5 string
 			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(interval)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/intervals/intervals.templ`, Line: 56, Col: 34}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/intervals/intervals.templ`, Line: 58, Col: 34}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 			if templ_7745c5c3_Err != nil {
