@@ -109,7 +109,7 @@ func TextInput(label, name, value string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" type=\"text\" class=\"block py-1 rounded-md shadow-sm focus:ring-1 focus:border-gray-300 border-gray-300\" placeholder=\"c#0\" hx-post=\"/intervals/validate-note\" hx-trigger=\"change submit\" hx-sync=\"closest form:drop\"></div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" type=\"text\" class=\"block py-1 rounded-md shadow-sm focus:ring-1 focus:border-gray-300 border-gray-300\" placeholder=\"c#0\" hx-post=\"/intervals/validate-note\" hx-trigger=\"change,submit from:closest form\"></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -145,7 +145,7 @@ func TextInputInvalid(label, name, value, error_message string) templ.Component 
 		var templ_7745c5c3_Var9 string
 		templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(name)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components/input.templ`, Line: 25, Col: 19}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components/input.templ`, Line: 24, Col: 19}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 		if templ_7745c5c3_Err != nil {
@@ -158,7 +158,7 @@ func TextInputInvalid(label, name, value, error_message string) templ.Component 
 		var templ_7745c5c3_Var10 string
 		templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(label)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components/input.templ`, Line: 25, Col: 86}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components/input.templ`, Line: 24, Col: 86}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
 		if templ_7745c5c3_Err != nil {
@@ -171,7 +171,7 @@ func TextInputInvalid(label, name, value, error_message string) templ.Component 
 		var templ_7745c5c3_Var11 string
 		templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(name)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components/input.templ`, Line: 27, Col: 12}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components/input.templ`, Line: 26, Col: 12}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
 		if templ_7745c5c3_Err != nil {
@@ -184,7 +184,7 @@ func TextInputInvalid(label, name, value, error_message string) templ.Component 
 		var templ_7745c5c3_Var12 string
 		templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(name)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components/input.templ`, Line: 28, Col: 14}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components/input.templ`, Line: 27, Col: 14}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
 		if templ_7745c5c3_Err != nil {
@@ -197,7 +197,7 @@ func TextInputInvalid(label, name, value, error_message string) templ.Component 
 		var templ_7745c5c3_Var13 string
 		templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs(value)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components/input.templ`, Line: 29, Col: 16}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components/input.templ`, Line: 28, Col: 16}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
 		if templ_7745c5c3_Err != nil {
@@ -210,20 +210,20 @@ func TextInputInvalid(label, name, value, error_message string) templ.Component 
 		var templ_7745c5c3_Var14 string
 		templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf(`{"label":"%s"}`, label))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components/input.templ`, Line: 30, Col: 49}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components/input.templ`, Line: 29, Col: 49}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var14))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" type=\"text\" class=\"block rounded-md py-1 focus:ring-1 border-red-400 focus:border-red-400 focus:ring-red-500\" placeholder=\"c#0\" hx-post=\"/intervals/validate-note\" hx-trigger=\"change submit\" hx-sync=\"closest form:drop\"><p class=\"text-xs font-normal text-red-500\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" type=\"text\" class=\"block rounded-md py-1 focus:ring-1 border-red-400 focus:border-red-400 focus:ring-red-500\" placeholder=\"c#0\" hx-post=\"/intervals/validate-note\" hx-trigger=\"change,submit from:closest form\"><p class=\"text-xs font-normal text-red-500\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var15 string
 		templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.JoinStringErrs(error_message)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components/input.templ`, Line: 39, Col: 18}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components/input.templ`, Line: 37, Col: 18}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var15))
 		if templ_7745c5c3_Err != nil {
