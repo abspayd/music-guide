@@ -1,6 +1,9 @@
 package intervals
 
-import "github.com/abspayd/music-guide/views/layouts"
+import (
+	"github.com/abspayd/music-guide/views/components"
+	"github.com/abspayd/music-guide/views/layouts"
+)
 
 templ Intervals(history []string) {
 	@layouts.Base() {
@@ -11,14 +14,8 @@ templ Intervals(history []string) {
 			<div class="flex-row">
 				<div class="flex gap-6">
 					<form class="space-y-2" hx-target="#interval-entry" hx-swap="outerHTML" hx-post="/intervals">
-						<div>
-							<label for="note1" class="block text-sm font-medium leading-6 text-gray-900">Note 1</label>
-							<input id="note1" name="note1" type="text" class="text-input"/>
-						</div>
-						<div>
-							<label for="note2" class="block text-sm font-medium leading-6 text-gray-900">Note 2</label>
-							<input id="note2" name="note2" type="text" class="text-input"/>
-						</div>
+						@components.TextInput("Note 1", "note1", "")
+						@components.TextInput("Note 2", "note2", "")
 						<div>
 							<button
 								type="submit"
@@ -54,6 +51,8 @@ templ Intervals(history []string) {
 }
 
 templ IntervalEntry(interval string) {
+	// TODO: show previous input values and style nicely
+	// <i class="fa-solid fa-arrow-right"></i>
 	<div id="interval-entry"></div>
 	if len(interval) > 0 {
 		<li class="list-none">{ interval }</li>
