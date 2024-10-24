@@ -44,17 +44,8 @@ func intervalDistance(pitch1, pitch2 Pitch) int {
 }
 
 // Get the interval name between two pitch strings
-func IntervalName(pitch_string_1, pitch_string_2 string) (string, error) {
-	p1, err := NewPitch(pitch_string_1)
-	if err != nil {
-		return "", err
-	}
-	p2, err := NewPitch(pitch_string_2)
-	if err != nil {
-		return "", err
-	}
-
-	interval_distance := intervalDistance(p1, p2)
+func IntervalName(pitch1, pitch2 Pitch) (string, error) {
+	interval_distance := intervalDistance(pitch1, pitch2)
 	if interval_distance >= len(interval_names) {
 		return "", fmt.Errorf("Interval distance %d is greater than the maximum %d", interval_distance, len(interval_names))
 	}
