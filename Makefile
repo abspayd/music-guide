@@ -26,7 +26,10 @@ build:
 .PHONY: watch
 watch:
 	@echo "Watching for changes..."
-	air
+	npm run tailwind:build:watch &
+	templ generate --watch &
+	air &
+	wait
 
 .PHONY: run
 run:

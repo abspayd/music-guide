@@ -27,7 +27,10 @@ FROM base AS dev
 
 RUN go install github.com/air-verse/air@latest
 
-CMD ["air"]
+RUN npm tailwind:build:watch &
+RUN templ generate --watch &
+
+CMD sh -c ""
  
 # Production stage (use binary on fresh alpine install)
 FROM alpine:latest AS prod
