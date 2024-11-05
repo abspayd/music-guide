@@ -28,24 +28,21 @@ templ Intervals(history []string) {
 							<h2 class="text-lg font-bold text-gray-900">History</h2>
 						</div>
 
-						//<div class="overflow-y-auto snap-end overflow-x-hidden flex-grow m-0 p-0 pr-4">
-						<div class="overflow-y-auto snap-end overflow-x-hidden flex gap-8 flex-grow mt-2 px-2 w-fit">
-							// <div class="text-sm text-gray-600 font-light mt-2 pl-2 w-fit">
-								if len(history) == 0 {
-									<ul class="list-none">
-										<li id="interval-entry" class="text-sm text-gray-600 font-light">
-											Previous results will appear here
-										</li>
-									</ul>
-								} else {
-									@IntervalEntry("", "", "")
-									<ul class="list-none">
-										for _, interval := range history {
-											<li>{ interval }</li>
-										}
-									</ul>
-								}
-							// </div>
+						<div class="overflow-y-auto snap-end overflow-x-hidden px-2 w-full">
+							if len(history) == 0 {
+								<ul class="list-none">
+									<li id="interval-entry" class="text-sm text-gray-600 font-light mt-2">
+										Previous results will appear here
+									</li>
+								</ul>
+							} else {
+								@IntervalEntry("", "", "")
+								<ul class="list-none">
+									for _, interval := range history {
+										<li>{ interval }</li>
+									}
+								</ul>
+							}
 						</div>
 					</div>
 				</div>
@@ -57,11 +54,11 @@ templ Intervals(history []string) {
 templ IntervalEntry(note1, note2, interval string) {
 	<li id="interval-entry"></li>
 	if len(interval) > 0 {
-		<li class="list-none">
-			<span class="block font-normal text-xs/3">
+		<li class="list-none my-2">
+			<span class="block font-normal text-gray-500 text-xs/3">
 				{ note1 } to { note2 }
 			</span>
-			<span class="block font-medium text-base/3 text-black">
+			<span class="block font-medium text-sm/3 text-gray-700">
 				{ interval }
 			</span>
 		</li>
