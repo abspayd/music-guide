@@ -55,46 +55,64 @@ func TestIntervalDistance(t *testing.T) {
 }
 
 func TestIntervalName(t * testing.T) {
-	pitch_string_1 := "E0"
-	pitch_string_2 := "A0"
-	interval_name, err := IntervalName(pitch_string_1, pitch_string_2)
+	pitch1, err := NewPitch("E0")
+	if err != nil {
+		t.Error(err)
+	}
+	pitch2, err := NewPitch("A0")
+	if err != nil {
+		t.Error(err)
+	}
+	interval_name, err := IntervalName(pitch1, pitch2)
 	if err != nil {
 		t.Error(err)
 	}
 	expected := interval_names[5]
 	if interval_name != expected {
-		t.Errorf("IntervalName(\"%s\", \"%s\") = \"%s\", expected \"%s\"", pitch_string_1, pitch_string_2, interval_name, expected)
+		t.Errorf("IntervalName(\"%v\", \"%v\") = \"%s\", expected \"%s\"", pitch1, pitch2, interval_name, expected)
 	}
 
 	// Same octave but reversed is the same interval
-	interval_name, err = IntervalName(pitch_string_2, pitch_string_1)
+	interval_name, err = IntervalName(pitch2, pitch1)
 	if err != nil {
 		t.Error(err)
 	}
 	expected = interval_names[5]
 	if interval_name != expected {
-		t.Errorf("IntervalName(\"%s\", \"%s\") = \"%s\", expected \"%s\"", pitch_string_1, pitch_string_2, interval_name, expected)
+		t.Errorf("IntervalName(\"%v\", \"%v\") = \"%s\", expected \"%s\"", pitch1, pitch2, interval_name, expected)
 	}
 
-	pitch_string_1 = "A0"
-	pitch_string_2 = "E1"
-	interval_name, err = IntervalName(pitch_string_1, pitch_string_2)
+	pitch1, err = NewPitch("A0")
+	if err != nil {
+		t.Error(err)
+	}
+	pitch2, err = NewPitch("E1")
+	if err != nil {
+		t.Error(err)
+	}
+	interval_name, err = IntervalName(pitch1, pitch2)
 	expected = interval_names[7]
 	if err != nil {
 		t.Error(err)
 	}
 	if interval_name != expected {
-		t.Errorf("IntervalName(\"%s\", \"%s\") = \"%s\", expected \"%s\"", pitch_string_1, pitch_string_2, interval_name, expected)
+		t.Errorf("IntervalName(\"%v\", \"%v\") = \"%s\", expected \"%s\"", pitch1, pitch2, interval_name, expected)
 	}
 
-	pitch_string_1 = "A0"
-	pitch_string_2 = "D2"
-	interval_name, err = IntervalName(pitch_string_1, pitch_string_2)
+	pitch1, err = NewPitch("A0")
+	if err != nil {
+		t.Error(err)
+	}
+	pitch2, err = NewPitch("D2")
+	if err != nil {
+		t.Error(err)
+	}
+	interval_name, err = IntervalName(pitch1, pitch2)
 	expected = interval_names[17]
 	if err != nil {
 		t.Error(err)
 	}
 	if interval_name != expected {
-		t.Errorf("IntervalName(\"%s\", \"%s\") = \"%s\", expected \"%s\"", pitch_string_1, pitch_string_2, interval_name, expected)
+		t.Errorf("IntervalName(\"%v\", \"%v\") = \"%s\", expected \"%s\"", pitch1, pitch2, interval_name, expected)
 	}
 }

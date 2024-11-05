@@ -1,0 +1,15 @@
+<div hx-target=\"this\" hx-swap=\"outerHTML\"><label for=\"
+\" class=\"block text-sm font-medium leading-6 text-gray-900\">
+</label> <input id=\"
+\" name=\"
+\" value=\"
+\" hx-vals=\"
+\" type=\"text\" class=\"block py-1 rounded-md shadow-sm focus:ring-1 focus:border-gray-300 border-gray-300\" placeholder=\"c#0\" hx-post=\"/intervals/validate-note\" hx-trigger=\"change,submit from:closest form\"></div>
+<div hx-target=\"this\" hx-swap=\"outerHTML\"><label for=\"
+\" class=\"block text-sm font-medium leading-6 text-red-500\">
+</label> <input id=\"
+\" name=\"
+\" value=\"
+\" hx-vals=\"
+\" type=\"text\" class=\"block rounded-md py-1 focus:ring-1 border-red-400 focus:border-red-400 focus:ring-red-500\" placeholder=\"c#0\" hx-post=\"/intervals/validate-note\" hx-trigger=\"change,submit from:closest form\"><p class=\"text-xs font-normal text-red-500\">
+</p></div>

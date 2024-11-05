@@ -7,7 +7,7 @@ tmp_dir = "tmp"
 
 [build]
 # Array of commands to run before each build
-pre_cmd = [ "npm run tailwind:build", "templ generate" ]
+pre_cmd = [ ]
 # Just plain old shell command. You could use `make` as well.
 cmd = "go build -o ./tmp/main ./cmd/server"
 # Array of commands to run after ^C
@@ -23,7 +23,7 @@ exclude_dir = ["assets","tmp","node_modules"]
 # Watch these directories if you specified.
 include_dir = []
 # Watch these files.
-include_file = [ "views/static/css/input.css" ]
+include_file = [ ]
 # Exclude files.
 exclude_file = []
 # Exclude specific regular expressions.

@@ -17,7 +17,21 @@ func GetIntervalCalculator(c echo.Context) error {
 func PostIntervalCalculator(c echo.Context) error {
 	note1 := c.Request().PostFormValue("note1")
 	note2 := c.Request().PostFormValue("note2")
-	interval, err := app.IntervalName(note1, note2)
+
+	pitch1, err := app.NewPitch(note1)
+	if err != nil {
+		log.Println(err)
+		c.Response().Header().Set("HX-Reswap", "none")
+		return nil
+	}
+	pitch2, err := app.NewPitch(note2)
+	if err != nil {
+		log.Println(err)
+		c.Response().Header().Set("HX-Reswap", "none")
+		return nil
+	}
+
+	interval, err := app.IntervalName(pitch1, pitch2)
 
 	if err != nil {
 		// One or both of the inputs are invalid so just leave without swapping
@@ -25,11 +39,7 @@ func PostIntervalCalculator(c echo.Context) error {
 		return nil
 	}
 
-	// TODO: just a start to better output (I want it to show the inputs that lead to the answer)
-	// output := fmt.Sprintf("%s -> %s = %s", note1, note2, interval)
-	// return Render(c.Response().Writer, c, intervals.IntervalEntry(output))
-
-	return Render(c.Response().Writer, c, intervals.IntervalEntry(interval))
+	return Render(c.Response().Writer, c, intervals.IntervalEntry(pitch1.ToString(), pitch2.ToString(), interval))
 }
 
 func ValidateNote(c echo.Context) error {
