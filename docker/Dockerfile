@@ -25,12 +25,13 @@ RUN GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -v -o /usr/local/bin/app ./cm
 # Developer stage (live-reload)
 FROM base AS dev
 
+WORKDIR /usr/src/app
+
+COPY --from=base . .
+
 RUN go install github.com/air-verse/air@latest
 
-RUN npm tailwind:build:watch &
-RUN templ generate --watch &
-
-CMD sh -c ""
+ENTRYPOINT [ "./docker/scripts/watch.sh" ]
  
 # Production stage (use binary on fresh alpine install)
 FROM alpine:latest AS prod

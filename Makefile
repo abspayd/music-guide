@@ -12,6 +12,7 @@ IMAGE_NAME := abspayd/music-guide
 IMAGE_TAG := latest-dev
 STAGE := dev
 CONTAINER_NAME := music-guide-$(STAGE)
+DOCKERFILE := ./docker/Dockerfile
 
 .PHONY: all
 all: build
@@ -26,10 +27,9 @@ build:
 .PHONY: watch
 watch:
 	@echo "Watching for changes..."
-	npm run tailwind:build:watch &
-	templ generate --watch &
-	air &
-	wait
+	# npm run tailwind:build:watch
+	# templ generate --watch
+	air
 
 .PHONY: run
 run:
@@ -49,7 +49,7 @@ clean:
 .PHONY: docker-build
 docker-build:
 	@echo "Building docker image..."
-	docker build -t $(IMAGE_NAME):$(IMAGE_TAG) --target $(STAGE) .
+	docker build -t $(IMAGE_NAME):$(IMAGE_TAG) --target $(STAGE) -f $(DOCKERFILE) .
 
 .PHONY: docker-run
 docker-run:
@@ -69,7 +69,7 @@ docker-push:
 		--name builder \
 		--driver docker-container \
 		--use --bootstrap
-	docker buildx build --platform linux/amd64,linux/arm64 -t $(IMAGE_NAME):latest --target prod --push . 
+	docker buildx build --platform linux/amd64,linux/arm64 -t $(IMAGE_NAME):latest --target prod --push -f $(DOCKERFILE) .
 	@echo "Cleaning builder..."
 	docker buildx stop builder
 	docker buildx rm builder
