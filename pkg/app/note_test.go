@@ -1,6 +1,7 @@
 package app
 
 import (
+	"fmt"
 	"testing"
 )
 
@@ -126,6 +127,60 @@ func TestPitchStepUpDown(t *testing.T) {
 
 			// do the interval jump
 			distance := j - i
+
+			modified_pitch := pitch1
+			modified_pitch.PitchStepUpDown(distance, true)
+
+			if modified_pitch.index != pitch2.index || modified_pitch.Class != pitch2.Class || modified_pitch.Octave != pitch2.Octave {
+				t.Errorf("%v.PitchStepUpDown(%d, false) = %v, expected %v", pitch1, distance, modified_pitch, pitch2)
+			}
+		}
+	}
+
+	// multiple octave jump (sharps)
+	for i, note1 := range sharps {
+		note1 = fmt.Sprintf("%s%d", note1, 0)
+		pitch1, err := NewPitch(note1)
+		if err != nil {
+			t.Error(err)
+		}
+
+		for j, note2 := range sharps {
+			note2 = fmt.Sprintf("%s%d", note2, 1)
+			pitch2, err := NewPitch(note2)
+			if err != nil {
+				t.Error(err)
+			}
+
+			// do the interval jump
+			distance := (j - i) + 12
+
+			modified_pitch := pitch1
+			modified_pitch.PitchStepUpDown(distance, false)
+
+			if modified_pitch.index != pitch2.index || modified_pitch.Class != pitch2.Class || modified_pitch.Octave != pitch2.Octave {
+				t.Errorf("%v.PitchStepUpDown(%d, false) = %v, expected %v", pitch1, distance, modified_pitch, pitch2)
+			}
+		}
+	}
+
+	// multiple octave jump (flats)
+	for i, note1 := range flats {
+		note1 = fmt.Sprintf("%s%d", note1, 0)
+		pitch1, err := NewPitch(note1)
+		if err != nil {
+			t.Error(err)
+		}
+
+		for j, note2 := range flats {
+			note2 = fmt.Sprintf("%s%d", note2, 1)
+			pitch2, err := NewPitch(note2)
+			if err != nil {
+				t.Error(err)
+			}
+
+			// do the interval jump
+			distance := (j - i) + 12
 
 			modified_pitch := pitch1
 			modified_pitch.PitchStepUpDown(distance, true)

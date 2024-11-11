@@ -75,12 +75,12 @@ func intervalIndex(interval_name string) (int, error) {
 	return name, nil
 }
 
-	// func NoteFromInterval(pitch Pitch, interval string) (Pitch, error) {
-// 	// TODO
-// 	interval_distance, err := intervalIndex(interval)
-// 	if err != nil {
-// 		return Pitch{}, err
-// 	}
-// 
-// 	return Pitch{}
-// }
+func NoteFromInterval(pitch Pitch, interval string) (Pitch, error) {
+	interval_distance, err := intervalIndex(interval)
+	if err != nil {
+		return Pitch{}, err
+	}
+	pitch2 := pitch
+	pitch2.PitchStepUpDown(interval_distance, false)
+	return pitch2, nil
+}

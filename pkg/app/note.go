@@ -124,7 +124,7 @@ func NewPitch(str string) (Pitch, error) {
 // Increase/decrease a pitch's octave and index fields by some amount of half-steps (positive or negative).
 // Set flat=true to use flats instead of sharps in the pitch class field.
 func (p* Pitch) PitchStepUpDown(halfsteps int, flat bool) {
-	octave_change := int(halfsteps / 12)
+	octave_change := int((p.index + halfsteps) / 12)
 	p.Octave += octave_change
 	p.index = (p.index + halfsteps) % 12
 	if flat {

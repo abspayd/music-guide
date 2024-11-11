@@ -51,6 +51,9 @@ templ Intervals(history []string) {
 	}
 }
 
+// TODO: make the form to get the note an interval away from another note
+//       (also find a shorter name for that)
+
 templ IntervalEntry(note1, note2, interval string) {
 	<li id="interval-entry"></li>
 	if len(interval) > 0 {
