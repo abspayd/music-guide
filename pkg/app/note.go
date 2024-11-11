@@ -17,6 +17,34 @@ var (
 		"A": 9,
 		"B": 11,
 	}
+	sharps = []string{
+		"C",
+		"C#",
+		"D",
+		"D#",
+		"E",
+		"F",
+		"F#",
+		"G",
+		"G#",
+		"A",
+		"A#",
+		"B",
+	}
+	flats = []string{
+		"C",
+		"Db",
+		"D",
+		"Eb",
+		"E",
+		"F",
+		"Gb",
+		"G",
+		"Ab",
+		"A",
+		"Bb",
+		"B",
+	}
 )
 
 type Pitch struct {
@@ -91,6 +119,19 @@ func NewPitch(str string) (Pitch, error) {
 		}
 	}
 	return p, nil
+}
+
+// Increase/decrease a pitch's octave and index fields by some amount of half-steps (positive or negative).
+// Set flat=true to use flats instead of sharps in the pitch class field.
+func (p* Pitch) PitchStepUpDown(halfsteps int, flat bool) {
+	octave_change := int(halfsteps / 12)
+	p.Octave += octave_change
+	p.index = (p.index + halfsteps) % 12
+	if flat {
+		p.Class = flats[p.index]
+	} else {
+		p.Class = sharps[p.index]
+	}
 }
 
 // Convert a pitch to a string

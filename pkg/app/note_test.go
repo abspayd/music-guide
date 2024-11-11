@@ -65,9 +65,6 @@ func TestNewPitch(t *testing.T) {
 	}
 
 	// Test indices for pitch values
-	sharps := []string{
-		"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B",
-	}
 	for i, note := range sharps {
 		p, err := NewPitch(note)
 		if err != nil {
@@ -77,9 +74,6 @@ func TestNewPitch(t *testing.T) {
 			t.Errorf("Incorrect index %d for \"%s\", expected %d", p.index, note, i)
 		}
 	}
-	flats := []string{
-		"C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B",
-	}
 	for i, note := range flats {
 		p, err := NewPitch(note)
 		if err != nil {
@@ -87,6 +81,58 @@ func TestNewPitch(t *testing.T) {
 		}
 		if p.index != i {
 			t.Errorf("Incorrect index %d for \"%s\", expected %d", p.index, note, i)
+		}
+	}
+}
+
+func TestPitchStepUpDown(t *testing.T) {
+	// sharp notes (1 octave range)
+	for i, note1 := range sharps {
+		pitch1, err := NewPitch(note1)
+		if err != nil {
+			t.Error(err)
+		}
+
+		for j, note2 := range sharps {
+			pitch2, err := NewPitch(note2)
+			if err != nil {
+				t.Error(err)
+			}
+
+			// do the interval jump
+			distance := j - i
+
+			modified_pitch := pitch1
+			modified_pitch.PitchStepUpDown(distance, false)
+
+			if modified_pitch.index != pitch2.index || modified_pitch.Class != pitch2.Class || modified_pitch.Octave != pitch2.Octave {
+				t.Errorf("%v.PitchStepUpDown(%d, false) = %v, expected %v", pitch1, distance, modified_pitch, pitch2)
+			}
+		}
+	}
+
+	// flat notes (1 octave range)
+	for i, note1 := range flats {
+		pitch1, err := NewPitch(note1)
+		if err != nil {
+			t.Error(err)
+		}
+
+		for j, note2 := range flats {
+			pitch2, err := NewPitch(note2)
+			if err != nil {
+				t.Error(err)
+			}
+
+			// do the interval jump
+			distance := j - i
+
+			modified_pitch := pitch1
+			modified_pitch.PitchStepUpDown(distance, true)
+
+			if modified_pitch.index != pitch2.index || modified_pitch.Class != pitch2.Class || modified_pitch.Octave != pitch2.Octave {
+				t.Errorf("%v.PitchStepUpDown(%d, false) = %v, expected %v", pitch1, distance, modified_pitch, pitch2)
+			}
 		}
 	}
 }

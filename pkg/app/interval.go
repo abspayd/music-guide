@@ -6,32 +6,32 @@ import (
 
 var (
 	// Intervals named by number of steps from starting pitch
-	interval_names = []string{
-		"Perfect unison",
-		"Minor second",
-		"Major second",
-		"Minor third",
-		"Major third",
-		"Perfect fourth",
-		"Tritone",
-		"Perfect fifth",
-		"Minor sixth",
-		"Major sixth",
-		"Minor seventh",
-		"Major seventh",
-		"Perfect octave",
-		"Minor ninth",
-		"Major ninth",
-		"Minor tenth",
-		"Major tenth",
-		"Perfect eleventh",
-		"Augmented eleventh / Diminished twelfth",
-		"Perfect twelfth",
-		"Minor thirteenth",
-		"Major thirteenth",
-		"Minor fourteenth",
-		"Major fourteenth",
-		"Perfect fifteenth",
+	interval_names = map[string]int{
+		"Perfect unison": 0,
+		"Minor second": 1,
+		"Major second": 2,
+		"Minor third": 3,
+		"Major third": 4,
+		"Perfect fourth": 5,
+		"Tritone": 6,
+		"Perfect fifth": 7,
+		"Minor sixth": 8,
+		"Major sixth": 9,
+		"Minor seventh": 10,
+		"Major seventh": 11,
+		"Perfect octave": 12,
+		"Minor ninth": 13,
+		"Major ninth": 14,
+		"Minor tenth": 15,
+		"Major tenth": 16,
+		"Perfect eleventh": 17,
+		"Augmented eleventh / Diminished twelfth": 18,
+		"Perfect twelfth": 19,
+		"Minor thirteenth": 20,
+		"Major thirteenth": 21,
+		"Minor fourteenth": 22,
+		"Major fourteenth": 23,
+		"Perfect fifteenth": 24,
 	}
 )
 
@@ -50,5 +50,37 @@ func IntervalName(pitch1, pitch2 Pitch) (string, error) {
 		return "", fmt.Errorf("Interval distance %d is greater than the maximum %d", interval_distance, len(interval_names))
 	}
 
-	return interval_names[interval_distance], nil
+	for k, v := range interval_names {
+		if v == interval_distance {
+			return k, nil
+		}
+	}
+
+	return "", fmt.Errorf("An error occurred finding the interval name for interval with distance %d", interval_distance)
 }
+
+func IntervalNames() []string {
+	intervals := make([]string, len(interval_names))
+	for key, _ := range interval_names {
+		intervals = append(intervals, key)
+	}
+	return intervals
+}
+
+func intervalIndex(interval_name string) (int, error) {
+	name, ok := interval_names[interval_name]
+	if !ok {
+		return -1, fmt.Errorf("Unable to get index for interval \"%s\"", interval_name)
+	}
+	return name, nil
+}
+
+	// func NoteFromInterval(pitch Pitch, interval string) (Pitch, error) {
+// 	// TODO
+// 	interval_distance, err := intervalIndex(interval)
+// 	if err != nil {
+// 		return Pitch{}, err
+// 	}
+// 
+// 	return Pitch{}
+// }

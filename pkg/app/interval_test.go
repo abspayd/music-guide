@@ -6,16 +6,12 @@ import (
 )
 
 func TestIntervalDistance(t *testing.T) {
-	notes := []string{
-		"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B",
-	}
-
 	// Test that the interval distance from C0 to B0 is just 0-11
-	pitch1, err := NewPitch(notes[0])
+	pitch1, err := NewPitch(sharps[0])
 	if err != nil {
 		t.Error(err)
 	}
-	for i, note := range notes {
+	for i, note := range sharps {
 		pitch2, err := NewPitch(note)
 		if err != nil {
 			t.Error(err)
@@ -27,7 +23,7 @@ func TestIntervalDistance(t *testing.T) {
 	}
 
 	// Test that the interval distance from C0 to C1 through B1 is 12-23
-	for i, note := range notes {
+	for i, note := range sharps {
 		pitch2, err := NewPitch(fmt.Sprintf("%s%d", note, 1))
 		if err != nil {
 			t.Error(err)
@@ -67,7 +63,7 @@ func TestIntervalName(t * testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	expected := interval_names[5]
+	expected := "Perfect fourth"
 	if interval_name != expected {
 		t.Errorf("IntervalName(\"%v\", \"%v\") = \"%s\", expected \"%s\"", pitch1, pitch2, interval_name, expected)
 	}
@@ -77,7 +73,7 @@ func TestIntervalName(t * testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	expected = interval_names[5]
+	expected = "Perfect fourth"
 	if interval_name != expected {
 		t.Errorf("IntervalName(\"%v\", \"%v\") = \"%s\", expected \"%s\"", pitch1, pitch2, interval_name, expected)
 	}
@@ -91,7 +87,7 @@ func TestIntervalName(t * testing.T) {
 		t.Error(err)
 	}
 	interval_name, err = IntervalName(pitch1, pitch2)
-	expected = interval_names[7]
+	expected = "Perfect fifth"
 	if err != nil {
 		t.Error(err)
 	}
@@ -108,7 +104,7 @@ func TestIntervalName(t * testing.T) {
 		t.Error(err)
 	}
 	interval_name, err = IntervalName(pitch1, pitch2)
-	expected = interval_names[17]
+	expected = "Perfect eleventh"
 	if err != nil {
 		t.Error(err)
 	}
