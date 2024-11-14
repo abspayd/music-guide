@@ -7,53 +7,58 @@ import (
 
 templ Intervals(history []string) {
 	@layouts.Base() {
-		<div class="flex flex-col w-fit mx-auto">
-			<div class="flex-row">
-				<h1 class="text-2xl font-extrabold leading-10 text-gray-900">Interval Calculator</h1>
-			</div>
-			<div class="flex-row">
-				<div class="flex gap-6">
-					<form class="space-y-2" hx-target="#interval-entry" hx-swap="outerHTML" hx-post="/intervals">
-						@components.TextInput("Note 1", "note1", "")
-						@components.TextInput("Note 2", "note2", "")
-						<div>
-							<button
-								type="submit"
-								class="text-white text-sm font-bold bg-cyan-600 hover:bg-cyan-700 rounded-md py-2 px-4 my-2"
-							>Submit</button>
-						</div>
-					</form>
-					<div class="flex flex-col overflow-hidden w-fit min-w-52 h-72 px-4 border rounded-md border-gray-300">
-						<div class="border-b border-b-gray-400 px-2">
-							<h2 class="text-lg font-bold text-gray-900">History</h2>
-						</div>
+		@IntervalCalculator(history)
+	}
+}
 
-						<div class="overflow-y-auto snap-end overflow-x-hidden px-2 w-full">
-							if len(history) == 0 {
-								<ul class="list-none">
-									<li id="interval-entry" class="text-sm text-gray-600 font-light mt-2">
-										Previous results will appear here
-									</li>
-								</ul>
-							} else {
-								@IntervalEntry("", "", "")
-								<ul class="list-none">
-									for _, interval := range history {
-										<li>{ interval }</li>
-									}
-								</ul>
-							}
-						</div>
+templ IntervalCalculator(history []string) {
+	<div class="flex flex-col w-fit mx-auto">
+		<div class="flex-row">
+			<h1 class="text-2xl font-extrabold leading-10 text-gray-900">Interval Calculator</h1>
+		</div>
+		<div class="flex-row">
+			<div class="flex gap-6">
+				<form class="space-y-2" hx-target="#interval-entry" hx-swap="outerHTML" hx-post="/intervals">
+					@components.TextInput("Note 1", "note1", "")
+					@components.TextInput("Note 2", "note2", "")
+					<div>
+						<button
+							type="submit"
+							class="text-white text-sm font-bold bg-cyan-600 hover:bg-cyan-700 rounded-md py-2 px-4 my-2"
+						>Submit</button>
+					</div>
+				</form>
+				<div class="flex flex-col overflow-hidden w-fit min-w-52 h-72 px-4 border rounded-md border-gray-300">
+					<div class="border-b border-b-gray-400 px-2">
+						<h2 class="text-lg font-bold text-gray-900">History</h2>
+					</div>
+					<div class="overflow-y-auto snap-end overflow-x-hidden px-2 w-full">
+						if len(history) == 0 {
+							<ul class="list-none">
+								<li id="interval-entry" class="text-sm text-gray-600 font-light mt-2">
+									Previous results will appear here
+								</li>
+							</ul>
+						} else {
+							@IntervalEntry("", "", "")
+							<ul class="list-none">
+								for _, interval := range history {
+									<li>{ interval }</li>
+								}
+							</ul>
+						}
 					</div>
 				</div>
 			</div>
 		</div>
-	}
+	</div>
+}
+
+templ IntervalJumpCalculator() {
 }
 
 // TODO: make the form to get the note an interval away from another note
-//       (also find a shorter name for that)
-
+// (also find a shorter name for that)
 templ IntervalEntry(note1, note2, interval string) {
 	<li id="interval-entry"></li>
 	if len(interval) > 0 {
