@@ -2,7 +2,6 @@
 BINARY := app
 BUILD_PATH := bin
 CSS_PATH := ./views/static/css
-TEMPLATE_PATH := ./views/1
 
 SRC_DIR := ./cmd/server
 PORT := 3000
@@ -20,7 +19,7 @@ all: build
 .PHONY: build
 build:
 	@echo "Building the server..."
-	npm run tailwind:build
+	npm run build
 	templ generate
 	go build -o $(BUILD_PATH)/$(BINARY) -v $(SRC_DIR)
 

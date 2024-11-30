@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"os"
 
 	"github.com/abspayd/music-guide/routes"
@@ -11,12 +12,14 @@ import (
 func main() {
 	e := echo.New()
 
-	e.Static("/static", "views/static")
+	e.Static("/static", "static")
 
 	routes.SetupRoutes(e)
 
-	godotenv.Load()
-
+	err := godotenv.Load()
+	if err != nil {
+		log.Printf("Unable to load .env file: %v", err)
+	}
 
 	port := os.Getenv("PORT")
 	e.Logger.Fatal(e.Start(":" + port))

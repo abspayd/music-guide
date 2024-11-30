@@ -8,6 +8,7 @@ import (
 templ Intervals(history []string) {
 	@layouts.Base() {
 		@IntervalCalculator(history)
+		@IntervalJumpCalculator()
 	}
 }
 
@@ -36,7 +37,7 @@ templ IntervalCalculator(history []string) {
 						if len(history) == 0 {
 							<ul class="list-none">
 								<li id="interval-entry" class="text-sm text-gray-600 font-light mt-2">
-									Previous results will appear here
+									Nothing to show yet
 								</li>
 							</ul>
 						} else {
@@ -55,6 +56,7 @@ templ IntervalCalculator(history []string) {
 }
 
 templ IntervalJumpCalculator() {
+	<div></div>
 }
 
 // TODO: make the form to get the note an interval away from another note

@@ -1,5 +1,4 @@
 #!/bin/sh
-# npm run tailwind:build:watch &
-npx tailwindcss -i ./views/static/css/input.css -o ./views/static/css/output.css --watch=always </dev/null &
+npx tailwindcss -i ./static/css/index-src.css -o ./static/css/index.css --watch=always </dev/null &
 templ generate --watch &
 air

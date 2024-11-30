@@ -6,4 +6,4 @@
 /node_modules
 package-lock.json
 
-/views/static/css/output.css
+/static/css/index.css

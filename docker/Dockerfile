@@ -18,7 +18,7 @@ FROM base AS builder
 
 ENV CGO_ENABLED=0
 
-RUN npm run tailwind:build
+RUN npm run build
 RUN templ generate
 RUN GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -v -o /usr/local/bin/app ./cmd/server
 
@@ -39,6 +39,6 @@ FROM alpine:latest AS prod
 WORKDIR /web
 
 COPY --from=builder /usr/local/bin/app .
-COPY --from=builder /usr/src/app/views/static views/static
+COPY --from=builder /usr/src/app/static ./static
 
 CMD ["./app"]
